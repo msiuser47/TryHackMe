@@ -21,7 +21,7 @@
 
 ## 📖 About This Project
 
-This repository documents my complete, independently-written walkthroughs and technical analysis for **TryHackMe's Hacker Holidays 2026: The Byte Lotus** — a 14-day festive CTF-style event set at a fictional luxury resort. Each day introduced a standalone challenge spanning a realistic range of attack surfaces: AI agents, cloud infrastructure, web applications, APIs, and forensic artifacts.
+This Directory documents my complete, independently-written walkthroughs and technical analysis for **TryHackMe's Hacker Holidays 2026: The Byte Lotus** — a 14-day festive CTF-style event set at a fictional luxury resort. Each day introduced a standalone challenge spanning a realistic range of attack surfaces: AI agents, cloud infrastructure, web applications, APIs, and forensic artifacts.
 
 Rather than posting raw flags, every writeup follows a consistent, professional structure — **Overview → Analysis → Root Cause → Exploitation → Remediation** — mirroring the format used in real-world penetration test reports.
 
@@ -29,9 +29,9 @@ Rather than posting raw flags, every writeup follows a consistent, professional 
 
 ---
 
-## 💡 Why This Repository Matters
+## 💡 Why This Collection Matters
 
-Recruiters and technical reviewers can use this repository to evaluate:
+Recruiters and technical reviewers can use this Directory to evaluate:
 
 | What You'll See | What It Demonstrates |
 |---|---|
@@ -80,7 +80,7 @@ Recruiters and technical reviewers can use this repository to evaluate:
 
 ---
 
-## 🌳 Repository Structure
+## 🌳 Directory Structure
 
 ```
 Hacker-Holidays-2026-The-Byte-Lotus/
@@ -138,7 +138,7 @@ Working through all 14 days reinforced technical skills across a wide spread of 
 
 ## 🚀 Usage Guidelines
 
-This repository is organized for easy navigation and reference:
+This section is organized for easy navigation and reference:
 
 1. **Browse by day** — Use the [Challenge Matrix](#-challenge-matrix) above to jump directly to any writeup or its corresponding screenshots.
 2. **Reading a writeup** — Each file in `Challenges/` follows a consistent structure: `Overview → Challenge Analysis → Root Cause → Exploitation Steps → Remediation/Takeaways`.
@@ -150,13 +150,13 @@ This repository is organized for easy navigation and reference:
 
 ## ⚠️ Disclaimer
 
-> This repository is intended **strictly for educational and informational purposes**.
+> This Directory is intended **strictly for educational and informational purposes**.
 >
 > All content documents activity performed within **TryHackMe's Hacker Holidays 2026** event — a legal, sanctioned, and intentionally vulnerable environment designed for security training. All systems, applications, and data referenced (including "The Byte Lotus" resort, its staff, and associated narrative elements) are **entirely fictional**.
 >
 > The techniques, tools, and methodologies described here should **never** be applied to systems, networks, or applications without **explicit, written authorization** from their owner. Unauthorized access to computer systems is illegal under laws such as the Computer Fraud and Abuse Act (CFAA) and equivalent legislation worldwide.
 >
-> The author assumes **no responsibility or liability** for any misuse of the information contained in this repository. Use this knowledge responsibly, ethically, and only within legal boundaries — such as authorized labs, CTFs, and platforms like TryHackMe or HackTheBox.
+> The author assumes **no responsibility or liability** for any misuse of the information contained in this Directory. Use this knowledge responsibly, ethically, and only within legal boundaries — such as authorized labs, CTFs, and platforms like TryHackMe or HackTheBox.
 
 ---
 
