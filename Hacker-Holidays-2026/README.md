@@ -160,9 +160,3 @@ This section is organized for easy navigation and reference:
 
 ---
 
-<div align="center">
-
-**⭐ If this repository helped you, consider giving it a star!**
-
-
-</div>
