@@ -1,1 +1,61 @@
-# TryHackMe-
+# 🛡️ TryHackMe — Cybersecurity Labs & Write-ups
+
+[![TryHackMe Badge](https://img.shields.io/badge/Platform-TryHackMe-red?style=flat-square&logo=tryhackme)](https://tryhackme.com/)
+[![Status](https://img.shields.io/badge/Repository-Active-brightgreen?style=flat-square)](#)
+[![Focus](https://img.shields.io/badge/Domain-Offensive%20%26%20Defensive-blue?style=flat-square)](#)
+
+> A structured portfolio documenting hands-on security labs, technical write-ups, CTF event solutions, and continuous methodology development across offensive and defensive cybersecurity domains.
+
+---
+
+## 📌 Overview
+
+This repository serves as a professional technical log detailing the practical skills acquired through **TryHackMe** rooms, network environments, and security challenges. 
+
+Unlike basic flag-driven write-ups, the content here focuses heavily on **methodology, root-cause vulnerability analysis, structured enumeration, and actionable remediation strategies**.
+
+---
+
+## 🎯 Objectives
+
+* **Hands-On Mastery:** Applying theoretical cybersecurity concepts in controlled, sandbox environments.
+* **Dual-Spectrum Security:** Developing balanced technical skills across Red Team (Offensive) and Blue Team (Defensive) operations.
+* **Rigorous Documentation:** Practicing structured technical reporting, vulnerability mapping, and proof-of-concept (PoC) writing.
+* **Continuous Portfolio Growth:** Maintaining a transparent, verifiable record of technical capabilities and ongoing learning.
+
+---
+
+## 📚 Topics & Taxonomy
+
+The challenges and rooms within this repository span several core cybersecurity domains:
+
+| Domain | Focus Areas & Concepts |
+| :--- | :--- |
+| **Network Security** | Packet analysis, active/passive reconnaissance, firewall evasion, protocol analysis |
+| **Web Application Security** | OWASP Top 10, SQLi, XSS, SSRF, IDOR, authentication bypass |
+| **Enumeration & Recon** | Port scanning, directory brute-forcing, sub-domain discovery, OSINT |
+| **Privilege Escalation** | Misconfiguration analysis, SUID/GUID abuse, kernel exploits, service hijacking |
+| **Active Directory Security** | Domain enumeration, Kerberoasting, AS-REP Roasting, lateral movement |
+| **Blue Team & SOC** | Log analysis, SIEM monitoring, threat hunting, digital forensics, incident response |
+| **Cryptography & Forensics** | Traffic analysis, memory dumps, file carving, steganography, cipher analysis |
+
+---
+
+## 🏆 Featured Events & CTFs
+
+| Event Name | Description / Focus | Status |
+| :--- | :--- | :---: |
+| **Hacker Holidays 2026** | Multi-discipline CTF challenges covering web security, forensics, and exploit analysis | `Completed` |
+
+---
+
+## 🛠️ Tooling & Tech Stack
+
+```text
+├── Recon & Enumeration   :: Nmap, Gobuster, ffuf, Masscan
+├── Web Security          :: Burp Suite, OWASP ZAP, SQLmap
+├── Exploitation           :: Metasploit Framework, Searchsploit, Custom Exploit Code
+├── Cracking & Hashes     :: John the Ripper, Hashcat, Hydra
+├── Network & Traffic     :: Wireshark, TShark, TCPdump
+├── Scripting & Systems   :: Bash, Python, PowerShell, Linux CLI
+└── Blue Team & Forensics :: Volatility, CyberChef, Splunk, Autopsy
