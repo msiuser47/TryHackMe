@@ -65,3 +65,11 @@ The domains covered in this repository are **dynamically expanding** and current
 ├── Network & Traffic          :: Wireshark, TShark, TCPdump
 ├── Scripting & Automation     :: Bash, Python, PowerShell, Linux CLI
 └── Blue Team & Forensics      :: Volatility, CyberChef, Splunk, Autopsy
+
+<div align="center">
+
+**⭐ If this repository helped you, consider giving it a star!**
+
+
+</div>
+
