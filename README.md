@@ -51,7 +51,7 @@ The domains covered in this repository are **dynamically expanding** and current
 
 | Event Name | Description / Focus | Status |
 | :--- | :--- | :---: |
-| **Hacker Holidays 2026** | Multi-discipline CTF challenges covering web security, forensics, and exploit analysis | `Completed` |
+| **[Hacker Holidays 2026](./events/Hacker-Holidays-2026)** | Multi-discipline CTF challenges covering web security, forensics, and exploit analysis | `Completed` |
 
 ---
 
