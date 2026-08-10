@@ -2,7 +2,7 @@
 
 [![TryHackMe Badge](https://img.shields.io/badge/Platform-TryHackMe-red?style=flat-square&logo=tryhackme)](https://tryhackme.com/)
 [![Status](https://img.shields.io/badge/Repository-Scalable%20%26%20Active-brightgreen?style=flat-square)](#)
-[![Focus](https://img.shields.io/badge/Domain-Penetration%20Testing%20%26%20Defensive-blue?style=flat-square)](#)
+[![Focus](https://img.shields.io/badge/Domain-Offensive%20%26%20Defensive-blue?style=flat-square)](#)
 
 > A structured, modular, and **scalable portfolio** documenting hands-on labs, technical write-ups, CTF event solutions, and continuous methodology development across **offensive and defensive** cybersecurity domains.
 
