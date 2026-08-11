@@ -1,4 +1,4 @@
-# TryHackMe — Conti (Exchange Server Ransomware Investigation)
+#Conti (Exchange Server Ransomware Investigation)
 
 **Category:** Defensive Security / SIEM & Log Analysis
 **Tooling:** Splunk
