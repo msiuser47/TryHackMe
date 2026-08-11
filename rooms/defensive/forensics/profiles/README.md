@@ -1,4 +1,4 @@
-# TryHackMe — Profiles (Linux Memory Forensics)
+# Profiles (Linux Memory Forensics)
 
 **Category:** Defensive Security / Digital Forensics
 **Difficulty:** Medium
