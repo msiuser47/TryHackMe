@@ -1,4 +1,4 @@
-# TryHackMe — Conti (Exchange Server Ransomware Investigation)
+# Conti (Exchange Server Ransomware Investigation)
 
 **Category:** Defensive Security / SIEM & Log Analysis
 **Tooling:** Splunk
@@ -198,6 +198,4 @@ Although the bulk of the intrusion is a Windows/endpoint compromise, the **initi
 - **Ransom notes are a lagging indicator, not a leading one.** By the time `readme.txt` files appeared, the attacker had already achieved initial access, persistence, privilege escalation, and credential theft — all of which were logged and detectable well before encryption began.
 - **Unpatched, internet-facing Exchange infrastructure remains a top ransomware entry vector.** This intrusion chain mirrors real-world Conti operations, where known, patchable CVEs in edge infrastructure are consistently the first domino.
 
-## 10. Methodology Note
 
-The analytical approach and command/query sequence in this write-up were adapted from a publicly shared methodology for this room; the steps above were independently reproduced and verified against the provided Splunk dataset to arrive at the same results.
