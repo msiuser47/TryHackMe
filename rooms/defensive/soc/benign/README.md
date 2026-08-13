@@ -1,4 +1,4 @@
-# TryHackMe — Benign (SIEM Investigation with Splunk)
+# Benign (SIEM Investigation with Splunk)
 
 **Category:** Defensive Security / SOC Level 1 — SIEM
 **Tooling:** Splunk (index: `win_eventlogs`)
