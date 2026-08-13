@@ -1,4 +1,4 @@
-# TryHackMe — Ra (Active Directory Exploitation)
+# Ra (Active Directory Exploitation)
 
 **Category:** Offensive Security / Active Directory Penetration Testing
 **Domain:** `windcorp.thm`
