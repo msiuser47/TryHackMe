@@ -1,4 +1,4 @@
-# TryHackMe — Tempest (Full Attack Chain: Sysmon, Windows Event Logs & PCAP)
+# Tempest (Full Attack Chain: Sysmon, Windows Event Logs & PCAP)
 
 **Category:** Defensive Security / Digital Forensics & Incident Response (DFIR)
 **Data Sources:** `sysmon.evtx`, `windows.evtx`, `capture.pcapng`
@@ -295,7 +295,3 @@ sc.exe → "TempestUpdate2" service created (auto-start, binpath = final.exe) �
 ## 15. Conclusion
 
 This investigation reconstructed a complete, multi-stage intrusion — from a single malicious document exploiting a known Microsoft vulnerability, through staged payload delivery, credential harvesting, network pivoting via a legitimate tunneling tool, privilege escalation via a well-documented Windows exploitation technique, and finally redundant, SYSTEM-level persistence. At no point did the attacker rely on custom or novel tooling; every stage used a publicly available technique or tool, underscoring that effective detection and response depend on strong baseline monitoring (process creation, DNS, account/group changes, service creation) rather than signature-based detection of "exotic" malware alone.
-
-## 16. Methodology Note
-
-The overall investigative approach and findings in this write-up were adapted from a publicly shared methodology for this room; the steps were independently reproduced and verified against the provided evidence set. The structure, explanations, and analysis above were written independently rather than following that source's narrative style or format.
