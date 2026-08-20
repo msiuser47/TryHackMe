@@ -1,4 +1,4 @@
-# TryHackMe — HA: Joker (Boot-to-Root, Joomla CMS Compromise)
+# HA Joker (Boot-to-Root, Joomla CMS Compromise)
 
 **Category:** Offensive Security / Web Application & Privilege Escalation
 **Difficulty:** Medium
@@ -277,6 +277,3 @@ final.txt captured
 
 This engagement demonstrates a realistic compromise chain built from cascading, individually moderate weaknesses: exposed diagnostic and backup files, weak and reused credentials, an administrative CMS feature that doubles as a code-execution primitive, and an over-privileged service account group membership. No single finding required a zero-day or highly sophisticated exploit — proper credential hygiene, backup handling, and privilege auditing would have broken this chain at multiple independent points.
 
-## 20. Methodology Note
-
-The overall attack path and command sequence in this write-up were adapted from a publicly shared methodology for this room; the steps were independently reproduced and verified against the provided environment. The structure, explanations, and analysis above were written independently rather than following that source's narrative style or format.
