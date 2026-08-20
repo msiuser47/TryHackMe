@@ -1,4 +1,4 @@
-# TryHackMe — Dogcat (LFI to RCE, Docker Breakout)
+# Dogcat (LFI to RCE, Docker Breakout)
 
 **Category:** Offensive Security / Web Application & Privilege Escalation
 **Difficulty:** Medium
@@ -275,6 +275,4 @@ Host-side cron execution → root reverse shell on host → Flag 4
 
 This engagement illustrates how a chain of individually moderate web application flaws — an under-validated inclusion parameter, a permissive extension override, and a poorly-isolated backup automation script — combined to produce a complete compromise spanning application, container, and host boundaries. Strong input validation at the web layer and strict isolation between container and host automation would have independently broken this chain at several points.
 
-## 18. Methodology Note
 
-The overall attack path and command sequence in this write-up were adapted from a publicly shared methodology for this room; the steps were independently reproduced and verified against the provided environment. The structure, explanations, and analysis above were written independently rather than following that source's narrative style or format.
