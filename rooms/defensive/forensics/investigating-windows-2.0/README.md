@@ -105,6 +105,8 @@ Using **Procmon**, a filter was applied for these two process names specifically
 
 Reviewing the process properties for `mim.exe` in Procmon identified its parent process by PID, which was then cross-referenced against the running process list:
 
+![windows2.0](screenshots/Investigating-Windows3.png)
+
 **Parent process identified:** `svchost.exe`
 
 A legitimate system process spawning an unexpected, credential-dumping child process is a strong indicator of either process injection into `svchost.exe` or a scheduled task deliberately configured to launch under a service host context to blend in with normal system activity.
