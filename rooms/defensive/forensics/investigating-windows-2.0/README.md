@@ -85,6 +85,9 @@ Reading the comments embedded within the script disclosed the name of the softwa
 
 Searching online using the secondary script's name (`LaunchBeaconingBackdoor`) together with one of these referenced websites surfaced a publicly documented, well-known WMI-based backdoor proof-of-concept matching this exact behavior:
 
+![windows2.0](screenshots/Investigating-Windows1.png)
+
+
 **Attack script identified:** `WMIBackdoor.ps1`
 
 **Location on the local machine:** `C:\TMP`
