@@ -70,6 +70,7 @@ SELECT * FROM Win32_ProcessStartTrace WHERE ProcessName = 'procexp64.exe'
 This confirmed the mechanism: a **WMI Event Filter** was configured to fire specifically whenever `procexp64.exe` attempted to start — explaining the tool's instant termination and revealing a textbook **WMI event subscription persistence/anti-forensics technique**.
 
 Following this lead into `C:\TMP` located the script responsible for the filter's action, opened for review in PowerShell ISE. Although saved with a `.ps1`-style naming pattern, the actual code inside was not PowerShell — it was **VBScript**, embedded and self-referenced by a variable of the same name within the file, a deliberate obfuscation choice to disguise the true scripting engine at a glance.
+![windows2.0](screenshots/Investigating-Windows2.png)
 
 **Script language confirmed:** `VBScript`
 
