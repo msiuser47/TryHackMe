@@ -5,7 +5,6 @@
 **Difficulty:** Medium
 **Skills Demonstrated:** Email Header Analysis, Phishing Triage, LNK File Forensics, Base64/PowerShell Payload Decoding, Windows PowerShell Event Log Analysis, Network Traffic Analysis (Wireshark/Tshark), C2 Traffic Identification, CyberChef Decoding
 
-> **Attribution Note:** This write-up documents my walkthrough of the *BoogeyMan 1* room. The investigative methodology follows the approach originally published by **rla.s1** ("BoogeyMan 1 - TryHackMe Write-up," Medium, May 8, 2026). I replicated and verified the same steps independently as part of my learning process and portfolio; credit for the original technique/approach goes to the author. Screenshots from the original source are not reproduced here — this report is text/finding-based only.
 
 ---
 
@@ -191,7 +190,6 @@ This investigation is a **Blue Team / Digital Forensics & Incident Response (DFI
 
 ## 9. References
 
-- rla.s1, *"BoogeyMan 1 - TryHackMe Write-up,"* Medium, May 8, 2026 (original methodology referenced for this write-up).
 - TryHackMe — *BoogeyMan* room (SOC Level 1 Capstone Challenge).
 - MITRE ATT&CK® Framework — [attack.mitre.org](https://attack.mitre.org)
 - Seatbelt (GhostPack) — [github.com/GhostPack/Seatbelt](https://github.com/GhostPack/Seatbelt)
