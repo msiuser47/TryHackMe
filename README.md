@@ -55,15 +55,6 @@ The domains covered in this repository are **dynamically expanding** and current
 
 ---
 
-## 🕵️ Featured Room Write-ups
-
-| Room | Category | Focus | Status |
-| :--- | :--- | :--- | :---: |
-| **[BoogeyMan 1](./rooms/defensive/forensics/soc)** | Blue Team / DFIR (SOC Level 1 Capstone) | Phishing triage, LNK/PowerShell payload analysis, PCAP-based C2 & exfiltration hunting, MITRE ATT&CK mapping | `Completed` |
-
-*Additional room write-ups are organized under `rooms/offensive` and `rooms/defensive` (Active Directory, network security, privilege escalation, web, threat detection & threat intelligence) as they are completed.*
-
----
 
 ## 🛠️ Tooling & Tech Stack
 
