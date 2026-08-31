@@ -1,4 +1,4 @@
-# BoogeyMan 1 | Blue Team / DFIR Investigation Writeup
+# BoogeyMan 1 | Blue Team / DFIR Investigation 
 
 **Category:** SOC Level 1 Capstone — Phishing & Endpoint/Network Forensics
 **Platform:** TryHackMe
