@@ -66,7 +66,7 @@ wpscan --url http://blog.thm/ -e
 
 **Result:** Several usernames/display names were identified: `kwheel`, `bjoel`, `Karen Wheeler`, `Billy Joel`.
 
-![blog](screenshots/blog1.png)
+![blog](screenshot/blog1.png)
 > *WPScan enumeration output showing the extracted WordPress usernames (`kwheel`, `bjoel`, `Karen Wheeler`, `Billy Joel`).*
 
 A custom username dictionary (`user.txt`) was built from these findings and used to brute-force credentials via WPScan's XML-RPC-based login:
@@ -93,7 +93,7 @@ set password cutiepie1
 run
 ```
 
-![blog](screenshots/blog2.png)
+![blog](screenshot/blog2.png)
 > *Metasploit console showing the `wp_crop_rce` module configured with `rhosts`, `username`, and `password`, followed by successful exploitation and Meterpreter session establishment.*
 
 **Q: What version of the above CMS was being used?**
@@ -133,7 +133,7 @@ Back on the target shell, SUID binaries were enumerated to identify potential pr
 find / -perm -u=s -type f 2>/dev/null
 ```
 
-![blog](screenshots/blog3.png)
+![blog](screenshot/blog3.png)
 > *Output of the SUID binary enumeration command, highlighting the custom `/usr/sbin/checker` binary among standard system SUID files.*
 
 **Result:** A non-standard SUID binary, **`/usr/sbin/checker`**, was identified — a strong indicator of an intentionally placed privilege escalation vector.
