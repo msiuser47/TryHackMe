@@ -26,7 +26,7 @@ At a high level, the attack chain is a classic **user-executed ransomware** scen
 
 I opened the **Users** artifact under System Information in Redline and reviewed the local account list. One account, **John Coleman**, stood out: it had a recent login timestamp and membership in both the *Administrators* and *Users* groups, making it the relevant employee account for this case.
 
-[!revilcrop](screenshoots/revil1.png)
+[!revilcrop](../screenshoots/revil1.png)
 > *Shows the Redline System Information panel with the compromised host's machine name and OS build details.*
 
 I then reviewed **System Information → Operating System Information**, which confirmed the workstation was running an outdated, unsupported OS build — a relevant fact for the risk assessment later in this report.
