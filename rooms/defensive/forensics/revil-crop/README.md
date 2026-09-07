@@ -1,4 +1,4 @@
-# REvil Corp — Redline Ransomware Investigation 
+# REvil Corp | Redline Ransomware Investigation 
 
 **Category:** Digital Forensics & Incident Response (DFIR)
 **Platform:** TryHackMe — "REvil Corp"
