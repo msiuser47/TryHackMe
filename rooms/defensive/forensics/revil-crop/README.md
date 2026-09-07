@@ -26,7 +26,7 @@ At a high level, the attack chain is a classic **user-executed ransomware** scen
 
 I opened the **Users** artifact under System Information in Redline and reviewed the local account list. One account, **John Coleman**, stood out: it had a recent login timestamp and membership in both the *Administrators* and *Users* groups, making it the relevant employee account for this case.
 
-![revilcrop](screenshoots/revil1.png)
+> ![revilcrop](screenshoots/revil1.png)
 > *Shows the Redline System Information panel with the compromised host's machine name and OS build details.*
 
 I then reviewed **System Information → Operating System Information**, which confirmed the workstation was running an outdated, unsupported OS build — a relevant fact for the risk assessment later in this report.
@@ -49,10 +49,10 @@ To trace the delivery vector, I pivoted to the **File Download History** artifac
 
 I then returned to the **File System** view and selected the binary directly to pull its file metadata (MD5 hash and size), which are the two most portable IOCs for this artifact.
 
-> [!revilcrop](screenshoots/revil3.png)
+> ![revilcrop](screenshoots/revil3.png)
 > *Shows the Redline file metadata panel with the MD5 hash and 164 KB size for `WinRAR2021.exe`.*
 
-> [!revilcrop](screenshoots/revil5.png)
+> ![revilcrop](screenshoots/revil5.png)
 > *Shows the Redline File Download History entry recording the internal HTTP source URL for the binary.*
 
 **Findings**
@@ -102,7 +102,7 @@ The room's narrative indicated the user tried to self-recover before escalating.
 
 First, I found a suspiciously named executable on the Desktop, `d.e.c.r.y.p.tor.exe` — the letter-spaced filename is a common social-engineering/evasion trick to slip past naive string-matching filters (and, in some cases, unsigned/typosquatted "decryptor" scams distributed by the ransomware operators themselves as a secondary monetization or credential-harvesting vector). I pulled its MD5 from the File System metadata.
 
-> [!revilcrop](screenshoots/revil6.png)
+> ![revilcrop](screenshoots/revil6.png)
 > *Shows the Redline File System metadata panel with the MD5 hash for `d.e.c.r.y.p.tor.exe`.*
 
 Second, per the ransom note's instructions, many REvil/Sodinokibi ransom notes include a "free decryption" URL to prove the attacker holds working keys. I filtered **Browser URL History** for HTTP entries and found the user had visited a `decryptor.top` URL with a unique per-victim path parameter — consistent with REvil's known "test decryption" portal pattern.
@@ -118,7 +118,7 @@ Second, per the ransom note's instructions, many REvil/Sodinokibi ransom notes i
 
 As the final step, I took the MD5 hash of `WinRAR2021.exe` and queried it directly on **VirusTotal** — this was a step I added on top of the base solution to independently verify the family attribution rather than taking it on faith. The sample was flagged as malicious by the large majority of scanning engines, and the aggregated family/threat labels pointed consistently to the same ransomware family under three different naming conventions.
 
-> [!revilcrop](screenshoots/revil4.png)
+> ![revilcrop](screenshoots/revil4.png)
 > *Shows the VirusTotal detection summary for the `WinRAR2021.exe` MD5, with the `sodin` / `sodinokibi` family labels and the "REvil" popular threat label.*
 
 **Findings**
