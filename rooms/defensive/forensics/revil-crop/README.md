@@ -26,7 +26,7 @@ At a high level, the attack chain is a classic **user-executed ransomware** scen
 
 I opened the **Users** artifact under System Information in Redline and reviewed the local account list. One account, **John Coleman**, stood out: it had a recent login timestamp and membership in both the *Administrators* and *Users* groups, making it the relevant employee account for this case.
 
-[!revilcrop](screenshoots/revil1.png)
+![revilcrop](screenshoots/revil1.png)
 > *Shows the Redline System Information panel with the compromised host's machine name and OS build details.*
 
 I then reviewed **System Information → Operating System Information**, which confirmed the workstation was running an outdated, unsupported OS build — a relevant fact for the risk assessment later in this report.
@@ -42,7 +42,7 @@ I then reviewed **System Information → Operating System Information**, which c
 
 Next, I drilled into the **File System** artifact and expanded John Coleman's user profile. Inside the **Downloads** folder sat an executable, `WinRAR2021.exe`, dated in the same timeframe as the reported incident — an immediate red flag, since a legitimate WinRAR installer would not normally be dropped directly as a standalone executable in a user's Downloads folder without an accompanying installer wizard footprint.
 
-> [!revilcrop](screenshoots/revil2.png)
+> ![revilcrop](screenshoots/revil2.png)
 > *Shows the Redline File System view highlighting `WinRAR2021.exe` inside `C:\Users\John Coleman\Downloads`.*
 
 To trace the delivery vector, I pivoted to the **File Download History** artifact. This showed the binary was pulled from an internal host over plain HTTP, and — importantly — saved to the exact Downloads path already identified, confirming the chain of custody between the download event and the file on disk.
