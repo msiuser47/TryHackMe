@@ -41,7 +41,7 @@ The scan identified:
 - **Port 10000** — `MiniServ 1.930` (Webmin)
 - **Port 55007** — SSH (discovered only via the full-range scan)
 
-> 📷 ![alt](screenshots/boilerctf1.png)
+> 📷 ![alt](screenshots/boiler1.png)
 > *Shows the combined output of the `-sC -sV` and `-p-` scans, highlighting the four open ports and confirming SSH was relocated to port 55007 rather than 22.*
 
 **Findings table**
