@@ -41,7 +41,7 @@ The scan identified:
 - **Port 10000** — `MiniServ 1.930` (Webmin)
 - **Port 55007** — SSH (discovered only via the full-range scan)
 
-> 📷 ![alt](screenshots/boiler1.png)
+> ![alt](screenshots/boiler1.png)
 > *Shows the combined output of the `-sC -sV` and `-p-` scans, highlighting the four open ports and confirming SSH was relocated to port 55007 rather than 22.*
 
 **Findings table**
@@ -63,7 +63,7 @@ ls -al
 get .info.txt
 ```
 
-> 📷 **[Placeholder: Screenshot — "Anonymous FTP login and .info.txt download"]**
+> ![alt](screenshots/boiler2.png)
 > *Shows the anonymous FTP session, the directory listing revealing the hidden `.info.txt` file, and the successful `get` transfer.*
 
 The retrieved file contained a ROT13-encoded message hinting that thorough enumeration — not this file itself — was the actual path forward. Decoding it (shifting each letter by 13 positions) revealed a plain-English note essentially saying "just wanted to see if you'd find this; enumeration is the real key," confirming it was a red herring rather than a usable credential or path.
@@ -83,7 +83,7 @@ gobuster dir -u http://<target-ip> -w /usr/share/wordlists/dirb/common.txt
 gobuster dir -u http://<target-ip>/joomla -w /usr/share/wordlists/dirb/common.txt
 ```
 
-> 📷 **[Placeholder: Screenshot — "Gobuster scan against the target root"]**
+> ![alt](screenshots/boiler3.png)
 > *Shows the first gobuster run against the web root, revealing the `/joomla` and `/manual` directories.*
 
 The root-level scan revealed a `/joomla` directory (redirecting to `/joomla/`) alongside the default Apache manual and a `robots.txt`. The follow-up scan against `/joomla/` surfaced the CMS frontend, an `/administrator` login portal, and a custom, non-standard `_test` endpoint accepting a `plot` parameter — the latter turning out to be the actual entry point into the box.
@@ -102,7 +102,7 @@ The discovered `_test` endpoint reflected the `plot` parameter directly into the
 /joomla/_test/?plot=<script>alert('xss')</script>
 ```
 
-> 📷 **[Placeholder: Screenshot — "Successful reflected XSS test"]**
+> ![alt](screenshots/boiler4.png)
 > *Shows the JavaScript alert box firing, confirming the `plot` parameter is reflected unsanitized into the response.*
 
 This confirmed a reflected XSS vulnerability, but XSS alone offered no direct path to code execution or file access on the server, so it was treated as a secondary finding and the testing moved on to injection-style payloads against the same parameter.
@@ -111,7 +111,7 @@ This confirmed a reflected XSS vulnerability, but XSS alone offered no direct pa
 
 Continued probing of the `plot` parameter and the surrounding application pointed to **sar2html**, a known third-party reporting plugin with a publicly documented remote command execution vulnerability. I looked this up directly on Exploit-DB to confirm the exact vulnerable parameter and payload syntax rather than guessing at injection strings blindly.
 
-> 📷 **[Placeholder: Screenshot — "sar2html vulnerability entry on Exploit-DB"]**
+> ![alt](screenshots/boiler5.png)
 > *Shows the public Exploit-DB advisory for the sar2html RCE vulnerability, confirming the vulnerable parameter and injection syntax used against the `plot` parameter.*
 
 ### 6. Remote Command Execution
@@ -123,12 +123,12 @@ Rather than using a Python-based reverse shell one-liner (as in the source write
 /joomla/_test/?plot=;cat log.txt
 ```
 
-> 📷 **[Placeholder: Screenshot — "Successful sar2html RCE with `ls` executed"]**
+> ![alt](screenshots/boiler6.png)
 > *Shows the `plot=;ls` request returning a directory listing of the web application folder, confirming command execution.*
 
 Running `ls` in the web directory revealed `index.php`, `log.txt`, `sar2html`, and `sarFILE` — confirming `log.txt` as the interesting artifact in the folder.
 
-> 📷 **[Placeholder: Screenshot — "cat log.txt output via RCE"]**
+> ![alt](screenshots/boiler7.png)
 > *Shows the `plot=;cat log.txt` request output, containing an SSH authentication log entry with a plaintext password for the user `basterd`.*
 
 The log file contained an SSH authentication record showing a successful login for the user `basterd`, with the password embedded directly alongside the log line — a plaintext credential leak in an application log the web server had read access to.
@@ -149,7 +149,7 @@ ssh basterd@<target-ip> -p 55007
 
 Enumerating the home directory surfaced a `backup.sh` script owned by another local user, `stoner`. The script — intended to automate off-host backups over SSH/`scp` — contained a **hardcoded plaintext credential in a comment line**.
 
-> 📷 **[Placeholder: Screenshot — "backup.sh revealing stoner's credentials"]**
+> ![alt](screenshots/boiler8.png)
 > *Shows the contents of `backup.sh` in `basterd`'s home directory, with the `stoner` user's password left in a comment line within the script.*
 
 ```bash
