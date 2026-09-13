@@ -1,4 +1,4 @@
-# Masterminds Writeup
+# Masterminds 
 
 **Category:** Digital Forensics & Incident Response (DFIR) / Network Traffic Analysis
 **Platform:** TryHackMe (Room: [Masterminds](https://tryhackme.com/room/mastermindsxlq))
