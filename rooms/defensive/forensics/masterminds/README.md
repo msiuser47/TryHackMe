@@ -47,7 +47,7 @@ _path=="conn" | put total_bytes := orig_bytes + resp_bytes | sort -r total_bytes
 
 The private address with disproportionately high total byte volume and outbound connections to external hosts is the compromised endpoint.
 
-> 📷 **[Placeholder: masterminds1.png — "conn total_bytes query, Infection 1"]**
+> ![alt](screenshots/masterminds1.png)
 > *Sorted `conn` log showing the victim's IP standing out by total bytes transferred.*
 
 **Finding failed connections to suspicious domains.** Filtering the `http` log for 404 responses surfaces domains the malware attempted to reach that were no longer live or were sinkholed:
@@ -56,14 +56,14 @@ The private address with disproportionately high total byte volume and outbound 
 _path=="http" | status_code==404 | cut host
 ```
 
-> 📷 **[Placeholder: masterminds2.png — "HTTP 404 query, Infection 1"]**
+> ![alt](screenshots/masterminds2.png)
 > *List of hosts returning a 404 status to the victim.*
 
 **Finding the successful callback and downloaded payload.** Filtering `http` traffic by response body size and status isolates the request that actually returned content, and cutting `id.orig_h`, `id.resp_h`, `method`, `host`, and `uri` (with `uniq -c`) surfaces the download of the malicious executable and its C2 host.
 
 **Malware attribution.** Submitting the downloaded executable's indicators to VirusTotal identified the payload as **Emotet**.
 
-> 📷 **[Placeholder: masterminds3.png — "VirusTotal detection result"]**
+> ![alt](screenshots/masterminds3.png)
 > *VirusTotal detections confirming the Emotet malware family for the downloaded executable.*
 
 #### Findings — Infection 1
@@ -86,7 +86,7 @@ _path=="http" | status_code==404 | cut host
 
 **Identifying the victim IP.** Same `conn`-log, total-bytes approach as Infection 1 was used, cross-checked against Brim's built-in "numerous suspicious connections to a single IP" query. Addresses ending in `.1` were excluded as gateway addresses rather than hosts.
 
-> 📷 **[Placeholder: masterminds4.png — "conn total_bytes query, Infection 2"]**
+> ![alt](screenshots/masterminds4.png)
 > *`conn` log sorted by total bytes, isolating the second victim host and its high-volume external destination.*
 
 **Isolating POST traffic (C2 beaconing / exfil).** Filtering the `http` log for `method=="POST"` scoped to the victim IP, then cutting the destination IP and de-duplicating, reveals the C2 server the victim repeatedly checked in with:
@@ -95,7 +95,7 @@ _path=="http" | status_code==404 | cut host
 method=="POST" | 192.168.75.146 | cut id.resp_h | sort -r | uniq
 ```
 
-> 📷 **[Placeholder: masterminds5.png — "POST connections query, Infection 2"]**
+>![alt](screenshots/masterminds5.png)
 > *Unique destination IP receiving POST requests from the victim, with a repeat count confirming 3 POST connections.*
 
 **Finding the dropped binary.** Cutting the destination IP, host, URI, and MIME type from the `http` log and de-duplicating exposes the executable download, its full path, and the hosting infrastructure:
@@ -104,14 +104,14 @@ method=="POST" | 192.168.75.146 | cut id.resp_h | sort -r | uniq
 _path=="http" | cut id.resp_h, host, uri, mime_type | uniq
 ```
 
-> 📷 **[Placeholder: masterminds6.png — "HTTP binary download query, Infection 2"]**
+> ![alt](screenshots/masterminds6.png)
 > *HTTP request showing the `.top` domain, binary URI, and hosting IP for the dropped executable.*
 
 **Correlating with IDS alerts.** Two Suricata "A Network Trojan was detected" alerts were raised, both pairing the victim with the same binary-hosting IP — corroborating the traffic-log findings independently.
 
 **Malware attribution.** Looking up the `.top` C2 domain in the URLhaus Database identified the family as **Redline Stealer**, a credential/info-stealing trojan.
 
-> 📷 **[Placeholder: masterminds7.png — "URLhaus Database lookup result"]**
+> ![alt](screenshots/masterminds7.png)
 > *URLhaus entry for the `.top` domain, tagging the payload as Redline Stealer.*
 
 #### Findings — Infection 2
