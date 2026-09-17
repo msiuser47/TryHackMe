@@ -132,11 +132,11 @@ This confirmed the full concealment mechanism.
 
 ## Exploitation Steps
 
-### Step 1 — Analyzing the Network File
+### Step 1 , Analyzing the Network File
 
 The `updates.py` file was extracted from the network capture and analyzed to understand how the malware operated.
 
-### Step 2 — Identifying the XOR Key
+### Step 2 , Identifying the XOR Key
 
 Reviewing the code revealed the XOR key inside the following function:
 
@@ -145,13 +145,13 @@ def getkey():
     return p1 + p2
 ```
 
-### Step 3 — Extracting Cookie Values with TShark
+### Step 3 , Extracting Cookie Values with TShark
 
 ```
 tshark -r traffic.pcapng -Y "http.request" -T fields -e http.cookie
 ```
 
-### Step 4 — Writing a Python Decoding Script
+### Step 4 , Writing a Python Decoding Script
 
 ![Challenge 4](../Screenshots/Challenge4/Packed-Light3.png)
 
@@ -161,7 +161,7 @@ The script performed the following steps:
 2. XOR decryption using the encryption key.
 3. Reassembling all characters in the order they were sent.
 
-### Step 5 — Running the Script
+### Step 5 , Running the Script
 
 ```
 python3 decode.py
@@ -181,7 +181,7 @@ After analyzing the network traffic and decoding the data hidden inside the cook
 THM{*****}
 ```
 
-The challenge did not involve obtaining a shell or performing privilege escalation — the objective was limited to network forensic analysis and recovery of exfiltrated data.
+The challenge did not involve obtaining a shell or performing privilege escalation , the objective was limited to network forensic analysis and recovery of exfiltrated data.
 
 ---
 
@@ -190,7 +190,7 @@ The challenge did not involve obtaining a shell or performing privilege escalati
 To reduce the risk of this type of attack, the following measures can be applied:
 
 - Monitor HTTP requests and detect abnormal patterns.
-- Inspect HTTP header values — especially cookies — for encoded or unusual data.
+- Inspect HTTP header values , especially cookies , for encoded or unusual data.
 - Monitor periodic, repeated connections to the same server.
 - Use EDR and IDS/IPS solutions to detect keylogging malware.
 - Prevent untrusted programs from accessing the keyboard or establishing outbound connections.
