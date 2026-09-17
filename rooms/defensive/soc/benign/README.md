@@ -1,6 +1,6 @@
 # Benign (SIEM Investigation with Splunk)
 
-**Category:** Defensive Security / SOC Level 1 — SIEM
+**Category:** Defensive Security / SOC Level 1 , SIEM
 **Tooling:** Splunk (index: `win_eventlogs`)
 **Difficulty:** Beginner–Intermediate
 **Skills demonstrated:** Windows process-execution log analysis (Event ID 4688), Splunk search construction (`top`, `rare`), impersonation/account-anomaly detection, LOLBIN abuse identification, C2 payload delivery tracing
@@ -19,7 +19,7 @@ The environment is organized into three departments, each with known, named user
 | HR | Haroon, Chris, Diana |
 | Marketing | Bell, Amelia, Deepak |
 
-The objective was to use Splunk alone — with no additional log sources — to identify the compromised account, the technique used to establish persistence, the delivery mechanism for a malicious payload, and the resulting indicator of compromise.
+The objective was to use Splunk alone , with no additional log sources , to identify the compromised account, the technique used to establish persistence, the delivery mechanism for a malicious payload, and the resulting indicator of compromise.
 
 ## 2. Objectives
 
@@ -37,7 +37,7 @@ Rather than searching blindly, the investigation was scoped down progressively:
 1. Confirm data coverage (volume/date range) before drawing conclusions.
 2. Use `UserName` field statistics to surface accounts that don't match the known roster.
 3. Narrow to HR-specific hosts/users once the department of interest was confirmed.
-4. Pivot on `CommandLine` — first for scheduled-task keywords, then for rare/unusual command patterns — since Event ID 4688 records the exact command executed.
+4. Pivot on `CommandLine` , first for scheduled-task keywords, then for rare/unusual command patterns , since Event ID 4688 records the exact command executed.
 5. Follow the identified C2 URL to recover the final artifact/flag.
 
 This mirrors a standard SOC triage pattern: **scope the data → find the anomaly → pivot on the anomaly → follow the artifact to its outcome.**
@@ -64,7 +64,7 @@ The organization's roster contains exactly 10 named users across three departmen
 
 **Answer:** `Amel1a`
 
-This is a classic homoglyph/lookalike account technique — designed to blend into `UserName` field listings unless the analyst explicitly checks for more values than expected.
+This is a classic homoglyph/lookalike account technique , designed to blend into `UserName` field listings unless the analyst explicitly checks for more values than expected.
 
 ### 4.3 HR User Running Scheduled Tasks
 
@@ -82,13 +82,13 @@ Filtering process-creation events for the `schtasks` keyword returned a small se
 ```
 index=win_eventlogs HostName="*HR*" | rare limit=20 CommandLine
 ```
-Rather than searching for a specific keyword, this query surfaced the **least common** command lines executed on HR hosts — an effective way to find one-off, anomalous activity that would otherwise be buried among routine process launches. This immediately exposed a command using `certutil.exe` to retrieve a file (`benign.exe`) from an external site, executed under a specific HR user account.
+Rather than searching for a specific keyword, this query surfaced the **least common** command lines executed on HR hosts , an effective way to find one-off, anomalous activity that would otherwise be buried among routine process launches. This immediately exposed a command using `certutil.exe` to retrieve a file (`benign.exe`) from an external site, executed under a specific HR user account.
 
 **Answer:** `haroon`
 
 ### 4.5 LOLBIN Used to Bypass Security Controls
 
-Identified directly from the command line uncovered in 4.4. `certutil.exe` is a native Windows utility (intended for certificate management) commonly abused to download files, since it is signed, trusted, and rarely restricted by application allow-listing — a textbook **living-off-the-land binary (LOLBIN)**.
+Identified directly from the command line uncovered in 4.4. `certutil.exe` is a native Windows utility (intended for certificate management) commonly abused to download files, since it is signed, trusted, and rarely restricted by application allow-listing , a textbook **living-off-the-land binary (LOLBIN)**.
 
 **Answer:** `certutil.exe`
 
@@ -100,13 +100,13 @@ Taken from the timestamp of the same `certutil.exe` process-creation event ident
 
 ### 4.7 Third-Party Hosting Site
 
-The full command line captured in 4.4 revealed the external domain used to stage the payload — a legitimate paste/text-hosting service repurposed to distribute the malicious binary, allowing the download traffic to blend in with normal outbound web activity.
+The full command line captured in 4.4 revealed the external domain used to stage the payload , a legitimate paste/text-hosting service repurposed to distribute the malicious binary, allowing the download traffic to blend in with normal outbound web activity.
 
 **Answer:** `controlc.com`
 
 ### 4.8 File Saved to the Host
 
-Also extracted from the same command line — the local filename the payload was written to on disk after download.
+Also extracted from the same command line , the local filename the payload was written to on disk after download.
 
 **Answer:** `benign.exe`
 
@@ -128,10 +128,10 @@ The complete URL, combining the domain and its unique path, ties every prior fin
 Impersonation account created: Amel1a (lookalike of Amelia)
       │
       ▼
-HR account "Chris.fort" — scheduled task execution (persistence)
+HR account "Chris.fort" , scheduled task execution (persistence)
       │
       ▼
-HR account "haroon" — certutil.exe abused as a LOLBIN
+HR account "haroon" , certutil.exe abused as a LOLBIN
       │
       ▼
 Payload staged on controlc.com (legitimate paste-hosting service)
@@ -149,7 +149,7 @@ Payload content recovered → THM{KJ&*H^B0}
 |---|---|---|---|
 | Persistence / Initial Access | [T1136.001](https://attack.mitre.org/techniques/T1136/001/) | Create Account: Local Account | Lookalike account `Amel1a` present in `UserName` logs, mimicking the legitimate `Amelia` account |
 | Persistence / Execution | [T1053.005](https://attack.mitre.org/techniques/T1053/005/) | Scheduled Task/Job: Scheduled Task | `schtasks` command executed by `Chris.fort` |
-| Defense Evasion | [T1218.010](https://attack.mitre.org/techniques/T1218/010/) | System Binary Proxy Execution: Regsvr32 *(category — LOLBIN abuse)* / [T1105](https://attack.mitre.org/techniques/T1105/) | `certutil.exe` used as a trusted, signed binary to download a payload, evading application controls |
+| Defense Evasion | [T1218.010](https://attack.mitre.org/techniques/T1218/010/) | System Binary Proxy Execution: Regsvr32 *(category , LOLBIN abuse)* / [T1105](https://attack.mitre.org/techniques/T1105/) | `certutil.exe` used as a trusted, signed binary to download a payload, evading application controls |
 | Command and Control | [T1102.002](https://attack.mitre.org/techniques/T1102/002/) | Web Service: Bidirectional Communication | Payload staged on `controlc.com`, a legitimate third-party paste-hosting service used to blend malicious traffic with normal web activity |
 | Command and Control / Ingress Tool Transfer | [T1105](https://attack.mitre.org/techniques/T1105/) | Ingress Tool Transfer | `benign.exe` downloaded and written to disk on the HR host via `certutil.exe` |
 
@@ -157,7 +157,7 @@ Payload content recovered → THM{KJ&*H^B0}
 
 ## 7. Key Takeaways
 
-- **Field-count assumptions catch impersonation.** Knowing the expected number of legitimate accounts (10) and deliberately requesting one more (`top limit=11`) is what exposed the lookalike account — a purely statistical check, not a signature match.
-- **`rare` is as valuable as `top`.** While `top` surfaces common/expected activity, `rare` is what exposes single, anomalous command executions buried inside thousands of routine process launches — exactly the kind of needle a LOLBIN abuse case represents.
-- **LOLBINs succeed by being trusted, not sophisticated.** `certutil.exe` required no custom tooling or exploit — its abuse relied entirely on being a signed, native utility that security controls are reluctant to block outright.
-- **Legitimate web services make convenient C2 infrastructure.** Hosting the payload on a mainstream paste site let the download blend into normal outbound HTTPS traffic, which is why command-line and process telemetry — not network signature detection alone — was what actually exposed this stage.
+- **Field-count assumptions catch impersonation.** Knowing the expected number of legitimate accounts (10) and deliberately requesting one more (`top limit=11`) is what exposed the lookalike account , a purely statistical check, not a signature match.
+- **`rare` is as valuable as `top`.** While `top` surfaces common/expected activity, `rare` is what exposes single, anomalous command executions buried inside thousands of routine process launches , exactly the kind of needle a LOLBIN abuse case represents.
+- **LOLBINs succeed by being trusted, not sophisticated.** `certutil.exe` required no custom tooling or exploit , its abuse relied entirely on being a signed, native utility that security controls are reluctant to block outright.
+- **Legitimate web services make convenient C2 infrastructure.** Hosting the payload on a mainstream paste site let the download blend into normal outbound HTTPS traffic, which is why command-line and process telemetry , not network signature detection alone , was what actually exposed this stage.
