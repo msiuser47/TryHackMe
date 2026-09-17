@@ -1,7 +1,7 @@
 # Internal (Boot-to-Root Penetration Test)
 
 **Category:** Offensive Security / Penetration Testing
-**Assessment Type:** Black-box — External, Web Application, and Internal
+**Assessment Type:** Black-box , External, Web Application, and Internal
 **Target:** `internal.thm`
 **Skills demonstrated:** Web enumeration, CMS credential attacks, web shell deployment, lateral movement, SSH tunneling/pivoting, CI/CD (Jenkins) exploitation, privilege escalation
 
@@ -13,7 +13,7 @@ This engagement simulated a black-box penetration test against a client environm
 
 The engagement was successful in achieving full compromise of the target host. The attack path progressed from an exposed, weakly-secured WordPress installation, through credential reuse and an internally-hosted, weakly-secured Jenkins CI/CD instance, to full root access. No single finding was individually catastrophic, but the **combination** of weak credential hygiene, an editable CMS theme file accepting arbitrary PHP, plaintext credential storage, and a brute-forceable internal admin panel created a complete and low-effort compromise chain.
 
-**Overall Risk Rating: Critical** — full remote-to-root compromise achieved via a chain of individually common misconfigurations.
+**Overall Risk Rating: Critical** , full remote-to-root compromise achieved via a chain of individually common misconfigurations.
 
 ## 2. Scope of Engagement
 
@@ -23,20 +23,20 @@ The engagement was successful in achieving full compromise of the target host. T
 | Scope | External, web application, and internal assessment |
 | Target | Single host: `internal.thm` (assigned IP only) |
 | Objectives | Capture `user.txt` and `root.txt`; document all vulnerabilities found |
-| Tooling restrictions | None — any tools/techniques permitted |
+| Tooling restrictions | None , any tools/techniques permitted |
 | Out of scope | Any host/IP not explicitly assigned to the engagement |
 
 ## 3. Methodology
 
 The assessment followed a standard black-box penetration testing methodology:
 
-1. **Reconnaissance** — host/service discovery via port scanning
-2. **Enumeration** — web content discovery, technology fingerprinting
-3. **Initial Access** — credential attacks against exposed services
-4. **Execution** — web shell deployment for remote code execution
-5. **Lateral Movement** — pivoting between local users based on discovered credentials
-6. **Discovery** — internal network/service enumeration from a foothold
-7. **Privilege Escalation** — exploitation of an internally-hosted admin service to reach root
+1. **Reconnaissance** , host/service discovery via port scanning
+2. **Enumeration** , web content discovery, technology fingerprinting
+3. **Initial Access** , credential attacks against exposed services
+4. **Execution** , web shell deployment for remote code execution
+5. **Lateral Movement** , pivoting between local users based on discovered credentials
+6. **Discovery** , internal network/service enumeration from a foothold
+7. **Privilege Escalation** , exploitation of an internally-hosted admin service to reach root
 
 ## 4. Reconnaissance
 
@@ -51,7 +51,7 @@ nmap -sC -sV -p- internal.thm
 | Port | Service |
 |---|---|
 | 22/tcp | SSH |
-| 80/tcp | HTTP (Apache — default welcome page) |
+| 80/tcp | HTTP (Apache , default welcome page) |
 
 With only SSH and HTTP exposed, the web service on port 80 became the primary attack surface.
 
@@ -63,9 +63,9 @@ The root of the site returned only a default Apache landing page with no actiona
 gobuster dir -u http://internal.thm -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
 ```
 
-This uncovered a **WordPress** installation hosted in a subdirectory, exposing a standard `wp-login.php` authentication page — the initial attack vector for the engagement.
+This uncovered a **WordPress** installation hosted in a subdirectory, exposing a standard `wp-login.php` authentication page , the initial attack vector for the engagement.
 
-## 6. Initial Access — WordPress Credential Attack
+## 6. Initial Access , WordPress Credential Attack
 
 **Username enumeration:**
 ```bash
@@ -81,9 +81,9 @@ This recovered valid credentials for the `admin` account:
 
 **Credentials obtained:** `admin : my2boys`
 
-## 7. Execution — Web Shell via Theme Editor
+## 7. Execution , Web Shell via Theme Editor
 
-Using the recovered administrator credentials, authenticated access to the WordPress dashboard was obtained. WordPress's built-in **Theme Editor** (`Appearance → Theme Editor`) allows administrators to directly edit PHP theme files from the browser — a feature that, combined with valid admin credentials, provides direct remote code execution.
+Using the recovered administrator credentials, authenticated access to the WordPress dashboard was obtained. WordPress's built-in **Theme Editor** (`Appearance → Theme Editor`) allows administrators to directly edit PHP theme files from the browser , a feature that, combined with valid admin credentials, provides direct remote code execution.
 
 The active theme's `404.php` template was replaced with the contents of the well-known PHP reverse shell (`pentestmonkey/php-reverse-shell`), with the callback IP/port updated to the attacking host. After saving the change and starting a local listener:
 
@@ -106,7 +106,7 @@ stty raw -echo; fg
 export TERM=xterm
 ```
 
-## 8. Lateral Movement — First Flag
+## 8. Lateral Movement , First Flag
 
 Post-exploitation enumeration (assisted by `linpeas.sh`) identified a second local user, `aubreanna`, but no immediately usable credentials for that account. Further manual directory review uncovered a plaintext credential file in a world-readable location:
 
@@ -122,9 +122,9 @@ su aubreanna
 
 With access to `aubreanna`'s home directory, the first flag was retrieved:
 
-**`user.txt` — captured**
+**`user.txt` , captured**
 
-## 9. Internal Discovery — Jenkins on Docker
+## 9. Internal Discovery , Jenkins on Docker
 
 Standard privilege-escalation checks were performed first:
 
@@ -133,7 +133,7 @@ sudo -l
 find / -perm -u=s -type f 2>/dev/null
 ```
 
-`sudo -l` prompted for a password (no passwordless sudo available), and no exploitable SUID binaries were found. A file in the home directory, `jenkins.txt`, referenced an internally-hosted Jenkins service on an IP address distinct from the attacking host — indicating a container-isolated service. Running `ifconfig` on the target confirmed a Docker bridge interface with a `172.x.x.x` address range, and Jenkins was found listening on port `8080` inside that container network.
+`sudo -l` prompted for a password (no passwordless sudo available), and no exploitable SUID binaries were found. A file in the home directory, `jenkins.txt`, referenced an internally-hosted Jenkins service on an IP address distinct from the attacking host , indicating a container-isolated service. Running `ifconfig` on the target confirmed a Docker bridge interface with a `172.x.x.x` address range, and Jenkins was found listening on port `8080` inside that container network.
 
 Since the Jenkins service was not directly reachable from the attacker's machine, an SSH local port forward was established through the already-compromised `aubreanna` account to pivot into the container network:
 
@@ -143,7 +143,7 @@ ssh -L 7878:172.17.0.2:8080 aubreanna@internal.thm
 
 Jenkins was then reachable locally at `http://localhost:7878`.
 
-## 10. Privilege Escalation — Jenkins Script Console to Root
+## 10. Privilege Escalation , Jenkins Script Console to Root
 
 Default Jenkins credentials (`admin:password`) were tested and failed. The login form was captured in Burp Suite, saved as a raw request, and brute-forced with FFUF:
 
@@ -156,7 +156,7 @@ This recovered valid Jenkins administrator credentials: **`admin : spongebob`**.
 
 > *Note: this stage of the attack path (identifying that Jenkins runs as root inside its container by default, and using its Script Console for code execution) was completed with the help of external research into Jenkins exploitation techniques, rather than from prior first-hand experience with the platform.*
 
-With administrative access to Jenkins, the built-in **Script Console** (`Manage Jenkins → Script Console`) was used to execute arbitrary Groovy code, which in turn spawned a system reverse shell — a well-documented Jenkins post-authentication RCE technique, since the Script Console executes with the same OS privileges as the Jenkins service (root, in this container's default configuration):
+With administrative access to Jenkins, the built-in **Script Console** (`Manage Jenkins → Script Console`) was used to execute arbitrary Groovy code, which in turn spawned a system reverse shell , a well-documented Jenkins post-authentication RCE technique, since the Script Console executes with the same OS privileges as the Jenkins service (root, in this container's default configuration):
 
 ```groovy
 r = Runtime.getRuntime()
@@ -172,7 +172,7 @@ After starting a listener and executing the script, a shell was received running
 
 Recalling the earlier `/opt` credential file discovery, the same directory was checked again from this elevated context, revealing a second file, `note.txt`, containing the information needed to complete the objective.
 
-**`root.txt` — captured**
+**`root.txt` , captured**
 
 ## 11. Attack Chain Summary
 
@@ -246,7 +246,7 @@ Jenkins Script Console (Groovy) → root shell in container
 |---|---|
 | **A07:2021 – Identification and Authentication Failures** | Both WordPress and Jenkins admin panels were compromised via weak, wordlist-crackable passwords with no apparent lockout or rate limiting |
 | **A05:2021 – Security Misconfiguration** | WordPress Theme Editor left enabled and directly writable by an admin account; Jenkins Script Console exposed with no restrictions and running as root |
-| **A08:2021 – Software and Data Integrity Failures** | Theme file integrity was not protected — arbitrary PHP could be written directly into a live, web-accessible template |
+| **A08:2021 – Software and Data Integrity Failures** | Theme file integrity was not protected , arbitrary PHP could be written directly into a live, web-accessible template |
 | **A01:2021 – Broken Access Control** | Plaintext credential files (`/opt/wp-save.txt`, `/opt/note.txt`) were readable outside their intended access boundary, and the Jenkins container had no effective network isolation from a compromised low-privileged host |
 | **A02:2021 – Cryptographic Failures** | Credentials for both WordPress and internal accounts were stored/used in plaintext rather than any secrets-management solution |
 | **A06:2021 – Vulnerable and Outdated Components** *(supporting factor)* | A default, unhardened WordPress theme and default Jenkins container configuration were both present with no evidence of hardening applied prior to go-live |
