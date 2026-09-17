@@ -16,7 +16,7 @@ This room simulates a full **Active Directory compromise chain**, starting from 
 2. Kerberos pre-authentication is disabled on a service account, enabling **AS-REP Roasting**.
 3. The recovered password hash is cracked offline, yielding valid domain credentials.
 4. Those credentials expose an SMB share containing a base64-encoded credential file for a second, more privileged account (`backup`).
-5. The `backup` account holds **DCSync** rights, allowing a full dump of the NTDS.dit password hashes — including the Administrator's NTLM hash.
+5. The `backup` account holds **DCSync** rights, allowing a full dump of the NTDS.dit password hashes , including the Administrator's NTLM hash.
 6. The Administrator's NTLM hash is used directly via **Pass-the-Hash** to gain full administrative control of the domain controller.
 
 This is a textbook illustration of how a single small misconfiguration (Kerberos pre-auth disabled) can cascade into full domain compromise.
@@ -33,21 +33,21 @@ This is a textbook illustration of how a single small misconfiguration (Kerberos
 | Kerbrute | Kerberos username enumeration and AS-REP roasting |
 | Hashcat | Offline cracking of the AS-REP hash |
 | smbclient | SMB share enumeration and file retrieval |
-| Impacket (`secretsdump.py`) | DCSync attack — dumping NTDS.dit hashes |
+| Impacket (`secretsdump.py`) | DCSync attack , dumping NTDS.dit hashes |
 | Evil-WinRM | Remote shell access via Pass-the-Hash |
 
 ---
 
 ## 3. Step-by-Step Walkthrough
 
-### Task 1 — Deploy the Machine
+### Task 1 , Deploy the Machine
 
 Connected to the TryHackMe lab network via OpenVPN using the provided `.ovpn` configuration file:
 ```bash
 sudo openvpn coedoverheated41.ovpn
 ```
 
-### Task 2 — Setup
+### Task 2 , Setup
 
 Installed the required offensive tooling (Impacket, BloodHound, Neo4j) to support later enumeration and attack phases:
 ```bash
@@ -56,14 +56,14 @@ pip3 install -r /opt/impacket/requirements.txt
 cd /opt/impacket/ && python3 ./setup.py install
 ```
 
-### Task 3 — Welcome to Attacktive Directory (Initial Enumeration)
+### Task 3 , Welcome to Attacktive Directory (Initial Enumeration)
 
 An initial Nmap scan was run against the target to identify exposed services:
 ```bash
 sudo nmap -sV -sC -oN nmap.out <TARGET_IP>
 ```
 
-**Results:** The scan revealed a typical Active Directory Domain Controller footprint — DNS, Kerberos, RPC, NetBIOS, SMB, and IIS.
+**Results:** The scan revealed a typical Active Directory Domain Controller footprint , DNS, Kerberos, RPC, NetBIOS, SMB, and IIS.
 
 **Findings:**
 | Question | Answer |
@@ -74,14 +74,14 @@ sudo nmap -sV -sC -oN nmap.out <TARGET_IP>
 
 The domain was identified as **`spookysec.local`**.
 
-### Task 4 — Enumerating Users via Kerberos
+### Task 4 , Enumerating Users via Kerberos
 
 Using **Kerbrute** with a supplied username wordlist, valid domain accounts were enumerated against the Key Distribution Center (KDC):
 ```bash
 ./kerbrute_linux_amd64 userenum -d spookysec.local --dc <TARGET_IP> usernames.txt
 ```
 
-**Key finding:** The `svc-admin` account had **Kerberos pre-authentication disabled**, allowing an **AS-REP Roasting** attack — the KDC returned a crackable `krb5asrep$23$` hash without requiring any prior authentication:
+**Key finding:** The `svc-admin` account had **Kerberos pre-authentication disabled**, allowing an **AS-REP Roasting** attack , the KDC returned a crackable `krb5asrep$23$` hash without requiring any prior authentication:
 ```
 $krb5asrep$23$svc-admin@SPOOKYSEC.LOCAL:...
 ```
@@ -102,7 +102,7 @@ hashcat -m 18200 TGT.txt pass.txt -o out.txt
 | Notable account discovered #1 | `svc-admin` |
 | Notable account discovered #2 | `backup` |
 
-### Task 6 — Back to the Basics (SMB Share Enumeration)
+### Task 6 , Back to the Basics (SMB Share Enumeration)
 
 With valid `svc-admin` credentials, SMB shares on the Domain Controller were enumerated:
 ```bash
@@ -135,9 +135,9 @@ backup@spookysec.local:backup2517860
 | Raw (encoded) file content | `YmFja3VwQHNwb29reXNlYy5sb2NhbDpiYWNrdXAyNTE3ODYw` |
 | Decoded credentials | `backup@spookysec.local:backup2517860` |
 
-### Task 7 — Elevating Privileges within the Domain (DCSync)
+### Task 7 , Elevating Privileges within the Domain (DCSync)
 
-The `backup` account was found to hold **replication rights** on the domain (a common misconfiguration where a backup/service account is granted `Replicating Directory Changes` / `Replicating Directory Changes All` permissions). This allows a **DCSync attack**, extracting all domain password hashes — including the built-in Administrator — without needing interactive access to the DC.
+The `backup` account was found to hold **replication rights** on the domain (a common misconfiguration where a backup/service account is granted `Replicating Directory Changes` / `Replicating Directory Changes All` permissions). This allows a **DCSync attack**, extracting all domain password hashes , including the built-in Administrator , without needing interactive access to the DC.
 
 Using Impacket's `secretsdump.py`:
 ```bash
@@ -157,7 +157,7 @@ Administrator NTLM hash: 0e0363213e37b94221497260b0bcb4fc
 | Attack allowing authentication without a password | Pass-the-Hash |
 | Evil-WinRM option to authenticate with a hash | `-H` |
 
-### Task 8 — Flag Submission (Domain Administrator Access)
+### Task 8 , Flag Submission (Domain Administrator Access)
 
 With the Administrator's NTLM hash in hand, authentication was performed directly via **Pass-the-Hash** using Evil-WinRM (Impacket's `psexec.py` is an equally valid alternative path):
 ```bash
@@ -211,7 +211,7 @@ This engagement targets **Windows Active Directory infrastructure**, not a web a
 
 ## 7. Key Takeaways
 
-- A single Kerberos misconfiguration (disabled pre-authentication) was the initial foothold that ultimately cascaded into full **Domain Administrator** compromise — illustrating how small AD misconfigurations carry outsized risk.
+- A single Kerberos misconfiguration (disabled pre-authentication) was the initial foothold that ultimately cascaded into full **Domain Administrator** compromise , illustrating how small AD misconfigurations carry outsized risk.
 - Credential reuse and files containing (even encoded) credentials on shared drives remain a common and highly effective attack vector.
 - Excessive AD replication permissions on non-Tier-0 accounts are a critical, frequently overlooked privilege escalation path (DCSync) and should be a standard item in any AD security review.
 - NTLM hash exposure is functionally equivalent to password exposure due to Pass-the-Hash; hash-based authentication protections (e.g., Credential Guard, LAPS, NTLM restriction policies) are essential defenses.
@@ -220,8 +220,8 @@ This engagement targets **Windows Active Directory infrastructure**, not a web a
 
 ## 8. References
 
-- TryHackMe — *Attacktive Directory* room.
-- MITRE ATT&CK® Framework — [attack.mitre.org](https://attack.mitre.org)
-- Impacket Toolkit — [github.com/fortra/impacket](https://github.com/fortra/impacket)
-- Hashcat — [hashcat.net](https://hashcat.net)
-- Evil-WinRM — [github.com/Hackplayers/evil-winrm](https://github.com/Hackplayers/evil-winrm)
+- TryHackMe , *Attacktive Directory* room.
+- MITRE ATT&CK® Framework , [attack.mitre.org](https://attack.mitre.org)
+- Impacket Toolkit , [github.com/fortra/impacket](https://github.com/fortra/impacket)
+- Hashcat , [hashcat.net](https://hashcat.net)
+- Evil-WinRM , [github.com/Hackplayers/evil-winrm](https://github.com/Hackplayers/evil-winrm)
