@@ -31,10 +31,10 @@ The attacker's goal is not to gain code execution or steal credentials , it is t
 | VirtuaPlant web dashboard | Visual confirmation of plant state (pump, valves, tank level) while registers were manipulated |
 | `curl` | Retrieve the flag files served over HTTP once each condition was met |
 
-> 📷 **[Placeholder: Screenshot , "nmap scan"]**
+> ![alt](screenshots/icsoil1.png)
 > *Nmap results showing the lab machine's open ports, confirming Modbus/TCP (502) and the HTTP service used to serve `flag1.txt`/`flag2.txt`.*
 
-> 📷 **[Placeholder: Screenshot , "VirtuaPlant web interface"]**
+> ![alt](screenshots/icsoil2.png)
 > *The VirtuaPlant dashboard showing the simulated oil plant , feed pump, tank, outlet valve, and separator , used to visually confirm each attack's effect in real time.*
 
 ---
