@@ -28,16 +28,16 @@ Obtain the **User Flag** and **Root Flag** by compromising the web application a
 
 ### Open Services
 
-- **Port 22 (SSH)** — open for remote login.
-- **Port 80 (HTTP)** — web server running Express.js with Express Session.
+- **Port 22 (SSH)** , open for remote login.
+- **Port 80 (HTTP)** , web server running Express.js with Express Session.
 
 ### Tools Used
 
-- **Nmap** — scanning open ports and services.
-- **Gobuster** — discovering hidden paths (`/staff`, `/logout`).
-- **cURL & Browser DevTools** — inspecting HTTP headers, testing POST requests, and modifying cookies (Storage / Cookies).
-- **Netcat** — catching the reverse shell connection.
-- **Node Debugger CLI (`node inspect`)** — connecting to the local debug port and exploiting the REPL environment.
+- **Nmap** , scanning open ports and services.
+- **Gobuster** , discovering hidden paths (`/staff`, `/logout`).
+- **cURL & Browser DevTools** , inspecting HTTP headers, testing POST requests, and modifying cookies (Storage / Cookies).
+- **Netcat** , catching the reverse shell connection.
+- **Node Debugger CLI (`node inspect`)** , connecting to the local debug port and exploiting the REPL environment.
 
 ### Rationale for Each Step
 
@@ -50,15 +50,15 @@ Obtain the **User Flag** and **Root Flag** by compromising the web application a
 
 ## Root Cause
 
-### Vulnerability 1 — NoSQL Parameter Pollution / Injection
+### Vulnerability 1 , NoSQL Parameter Pollution / Injection
 
 Occurs when the application processes form input directly without validating its data type. This allows objects containing NoSQL operators such as `$ne` (Not Equal) to be submitted, bypassing the password verification logic and returning a valid session.
 
-### Vulnerability 2 — Server-Side Template Injection (SSTI)
+### Vulnerability 2 , Server-Side Template Injection (SSTI)
 
 Occurs because user input is passed directly into the template engine (EJS / template literals) and executed server-side rather than being treated as plain text, allowing internal Node.js modules to be invoked to execute system commands.
 
-### Vulnerability 3 — Insecure Node Inspector Protocol / Privilege Escalation
+### Vulnerability 3 , Insecure Node Inspector Protocol / Privilege Escalation
 
 The Node.js application was launched with debug mode enabled (`--inspect=127.0.0.1:9229`) under elevated privileges, or with access to system tools such as `debugfs`. The absence of authentication on the local debug port allows any local user to execute arbitrary JavaScript code within the application's runtime environment.
 
@@ -106,7 +106,7 @@ ss -lntp | grep 9229
 
 ## Exploitation Steps
 
-### Step 1 — Bypassing the Login Page (NoSQL Injection)
+### Step 1 , Bypassing the Login Page (NoSQL Injection)
 
 An HTTP POST request was sent to bypass password verification:
 
@@ -121,13 +121,13 @@ Alternatively, this payload can be submitted directly through browser DevTools b
 ![Challenge 7](../Screenshots/Challenge7/donotdisturb1.png)
 
 
-### Step 2 — Fixating the Session and Accessing `/staff`
+### Step 2 , Fixating the Session and Accessing `/staff`
 
 The resulting cookie value was taken and added in Firefox via DevTools (Storage → Cookies), then the URL `http://10.49.181.153/staff` was visited.
 
 **Why it worked:** the server recognized the modified cookie as a valid staff session authorized to access the path.
 
-### Step 3 — Achieving Code Execution and Extracting the User Flag (SSTI to Reverse Shell)
+### Step 3 , Achieving Code Execution and Extracting the User Flag (SSTI to Reverse Shell)
 
 The template injection vulnerability was exploited to inject Node.js code that executed a Bash command for a reverse shell connection:
 
@@ -144,7 +144,7 @@ THM{****}
 
 **Why it worked:** the `process.getBuiltinModule` function bypasses restrictions and calls `child_process` to execute system commands directly, with the same privileges as the `poolside` user.
 
-### Step 4 — Privilege Escalation via Node Inspector
+### Step 4 , Privilege Escalation via Node Inspector
 
 After extracting the User Flag and finding no SUID binaries or sudo privileges for the `poolside` user, the investigation moved to inspecting local processes and listening services, leading to the discovery of the debugger port.
 
@@ -220,5 +220,5 @@ debug> repl
 
 ## References
 
-- [OWASP — NoSQL Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/NoSQL_Security_Cheat_Sheet.html)
-- [Node.js Documentation — Debugging Guide & Security](https://nodejs.org/learn/getting-started/debugging)
+- [OWASP , NoSQL Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/NoSQL_Security_Cheat_Sheet.html)
+- [Node.js Documentation , Debugging Guide & Security](https://nodejs.org/learn/getting-started/debugging)
