@@ -140,7 +140,7 @@ An exposed Git repository allows an attacker to:
 
 ## Lessons Learned
 
-- Every penetration test should begin with a reconnaissance phase — tools like Nmap can reveal critical information without any complex exploitation.
+- Every penetration test should begin with a reconnaissance phase , tools like Nmap can reveal critical information without any complex exploitation.
 - An exposed Git repository is a common web application mistake that can lead to full source code disclosure.
 - Even seemingly unimportant files, such as `README.md`, may contain sensitive information mistakenly left in production.
 - Specialized tools like `git-dumper` greatly simplify repository recovery and analysis once this class of vulnerability is discovered.
