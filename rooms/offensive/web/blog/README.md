@@ -44,7 +44,7 @@ An initial Nmap scan was run with default scripts and version detection enabled:
 nmap -sV -sC <TARGET_IP>
 ```
 
-**Result:** Three services were identified — **SSH (22)**, **HTTP (80)**, and **SMB (139, 445)**.
+**Result:** Three services were identified , **SSH (22)**, **HTTP (80)**, and **SMB (139, 445)**.
 
 ### Enumeration
 
@@ -124,7 +124,7 @@ The PDF was pulled back to the local attacking machine via Meterpreter's file tr
 download /home/bjoel/Billy_Joel_Termination_May20-2020.pdf
 ```
 
-**Analysis:** The document revealed that Billy Joel had been terminated from **"Rubber Ducky Inc."** — a subtle in-game clue suggesting the real user flag would later be found somewhere referencing a USB/removable-media context (i.e., a "rubber ducky" — a common reference to USB-based attack tools/media).
+**Analysis:** The document revealed that Billy Joel had been terminated from **"Rubber Ducky Inc."** , a subtle in-game clue suggesting the real user flag would later be found somewhere referencing a USB/removable-media context (i.e., a "rubber ducky" , a common reference to USB-based attack tools/media).
 
 ### Privilege Escalation
 
@@ -136,7 +136,7 @@ find / -perm -u=s -type f 2>/dev/null
 ![blog](screenshots/blog3.png)
 > *Output of the SUID binary enumeration command, highlighting the custom `/usr/sbin/checker` binary among standard system SUID files.*
 
-**Result:** A non-standard SUID binary, **`/usr/sbin/checker`**, was identified — a strong indicator of an intentionally placed privilege escalation vector.
+**Result:** A non-standard SUID binary, **`/usr/sbin/checker`**, was identified , a strong indicator of an intentionally placed privilege escalation vector.
 
 Running the binary directly returned an "Not an Admin" message, indicating some form of internal authorization check:
 ```bash
@@ -153,7 +153,7 @@ download /usr/sbin/checker
 The binary was loaded into **Ghidra** and analyzed. Decompilation of the `main` function revealed that the program:
 1. Reads the value of an environment variable named **`admin`**.
 2. If unset, prints `"Not an Admin"` and exits.
-3. If **set to any non-empty string value**, it spawns an interactive Bash shell — critically, inheriting the **SUID root** privilege of the binary itself, meaning the spawned shell runs as **root** regardless of the actual calling user.
+3. If **set to any non-empty string value**, it spawns an interactive Bash shell , critically, inheriting the **SUID root** privilege of the binary itself, meaning the spawned shell runs as **root** regardless of the actual calling user.
 
 This is a classic **insecure environment-variable-based authorization check** vulnerability: the binary trusts an easily attacker-controlled environment variable as its sole gate for granting root access.
 
@@ -186,7 +186,7 @@ cat /media/usb/user.txt
 **Q: Where was user.txt found?**
 **A: `/media/usb/`**
 
-**Result:** User flag successfully captured from the simulated USB mount point (redacted per source convention) — a payoff for the earlier PDF clue referencing "Rubber Ducky Inc."
+**Result:** User flag successfully captured from the simulated USB mount point (redacted per source convention) , a payoff for the earlier PDF clue referencing "Rubber Ducky Inc."
 
 ---
 
@@ -249,7 +249,7 @@ Unlike the CTI/DFIR-focused write-ups in this portfolio, this room's **initial a
 
 | OWASP Top 10 (2021) Category | Relevance to this Engagement |
 |---|---|
-| **A01:2021 – Broken Access Control** | The final privilege escalation vector (`checker` binary) is fundamentally a broken access control flaw — authorization was determined solely by the *presence* of an attacker-controllable environment variable rather than any legitimate identity or permission check. |
+| **A01:2021 – Broken Access Control** | The final privilege escalation vector (`checker` binary) is fundamentally a broken access control flaw , authorization was determined solely by the *presence* of an attacker-controllable environment variable rather than any legitimate identity or permission check. |
 | **A05:2021 – Security Misconfiguration** | Running an outdated **WordPress 5.0** installation with a known, unpatched RCE vulnerability is a textbook security misconfiguration/patch-management failure. |
 | **A07:2021 – Identification and Authentication Failures** | The `kwheel` account used a weak, easily brute-forced password (`cutiepie1`), and the CMS did not appear to enforce account lockout or rate-limiting against XML-RPC-based login attempts. |
 | **A06:2021 – Vulnerable and Outdated Components** | The exploited RCE vulnerability stems directly from running a vulnerable, outdated version of the WordPress core/plugin ecosystem rather than a current, patched release. |
@@ -270,18 +270,18 @@ Unlike the CTI/DFIR-focused write-ups in this portfolio, this room's **initial a
 
 ## 8. Key Takeaways
 
-- **Virtual host misconfiguration/dependency is a common enumeration blocker** — always test with a manually set `Host` header or `/etc/hosts` entry before concluding a web app can't be reached.
+- **Virtual host misconfiguration/dependency is a common enumeration blocker** , always test with a manually set `Host` header or `/etc/hosts` entry before concluding a web app can't be reached.
 - **WPScan remains a highly effective tool** for both passive enumeration (users, plugins, themes) and active credential attacks against WordPress deployments.
-- **Outdated CMS versions are a persistent, high-value attack surface** — WordPress 5.0's crop/image RCE is a great example of how a single unpatched component can lead to full remote code execution.
-- **SUID binaries that base authorization decisions on environment variables are inherently insecure**, since environment variables are entirely within the calling user's control — this is a recurring privilege escalation pattern worth specifically checking for in CTFs and real assessments alike.
-- **In-game/environment "clues" (like the PDF referencing Rubber Ducky Inc.) mirror real-world OSINT/context gathering** — post-exploitation document recovery can reveal organizational context useful well beyond the immediate technical objective.
+- **Outdated CMS versions are a persistent, high-value attack surface** , WordPress 5.0's crop/image RCE is a great example of how a single unpatched component can lead to full remote code execution.
+- **SUID binaries that base authorization decisions on environment variables are inherently insecure**, since environment variables are entirely within the calling user's control , this is a recurring privilege escalation pattern worth specifically checking for in CTFs and real assessments alike.
+- **In-game/environment "clues" (like the PDF referencing Rubber Ducky Inc.) mirror real-world OSINT/context gathering** , post-exploitation document recovery can reveal organizational context useful well beyond the immediate technical objective.
 
 ---
 
 ## 9. References
 
-- TryHackMe — *Blog* room (created by Nameless0ne).
-- MITRE ATT&CK® Framework — [attack.mitre.org](https://attack.mitre.org)
-- OWASP Top 10 (2021) — [owasp.org/Top10](https://owasp.org/Top10/)
-- WPScan — [wpscan.com](https://wpscan.com)
-- Ghidra — [ghidra-sre.org](https://ghidra-sre.org)
+- TryHackMe , *Blog* room (created by Nameless0ne).
+- MITRE ATT&CK® Framework , [attack.mitre.org](https://attack.mitre.org)
+- OWASP Top 10 (2021) , [owasp.org/Top10](https://owasp.org/Top10/)
+- WPScan , [wpscan.com](https://wpscan.com)
+- Ghidra , [ghidra-sre.org](https://ghidra-sre.org)
