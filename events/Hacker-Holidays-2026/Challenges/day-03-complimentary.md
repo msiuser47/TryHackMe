@@ -33,7 +33,7 @@ Upon opening the application, it was clear that it had:
 - No account creation
 - No user authentication system
 
-Despite this, the application was still able to identify the user and display personal information — raising the question of how it obtained access to that data in the first place.
+Despite this, the application was still able to identify the user and display personal information , raising the question of how it obtained access to that data in the first place.
 
 ### Source Code Analysis
 
@@ -76,7 +76,7 @@ The presence of:
 AWS.CognitoIdentityCredentials()
 ```
 
-in the code indicated that the application obtains temporary AWS credentials via Cognito. Since the app required no login, this pointed to the use of an **Unauthenticated Cognito Identity** — meaning any visitor could obtain a temporary AWS identity. This led to the decision to extract these credentials and assess their access level.
+in the code indicated that the application obtains temporary AWS credentials via Cognito. Since the app required no login, this pointed to the use of an **Unauthenticated Cognito Identity** , meaning any visitor could obtain a temporary AWS identity. This led to the decision to extract these credentials and assess their access level.
 
 ---
 
@@ -86,7 +86,7 @@ in the code indicated that the application obtains temporary AWS credentials via
 
 Unauthenticated Cognito users were granted permissions far beyond what was required.
 
-The correct security principle here is the **Principle of Least Privilege** — a user should only be granted the minimum access necessary. In this application, a guest should only have been able to read their own data. Due to a misconfigured IAM role, however, a guest was able to:
+The correct security principle here is the **Principle of Least Privilege** , a user should only be granted the minimum access necessary. In this application, a guest should only have been able to read their own data. Due to a misconfigured IAM role, however, a guest was able to:
 
 - Perform a full `DynamoDB Scan`
 - Read every guest record in the table
@@ -155,11 +155,11 @@ This confirmed unauthorized data disclosure.
 
 ## Exploitation
 
-### Step 1 — Analyzing JavaScript
+### Step 1 , Analyzing JavaScript
 
 The site's files were opened via Browser DevTools and searched for the keywords `cognito`, `aws`, and `dynamodb`, which surfaced the `IdentityPoolId`.
 
-### Step 2 — Extracting AWS Credentials
+### Step 2 , Extracting AWS Credentials
 
 Using the browser console:
 
@@ -175,7 +175,7 @@ This returned:
 - Secret Access Key
 - Session Token
 
-### Step 3 — Configuring the AWS CLI
+### Step 3 , Configuring the AWS CLI
 
 ```
 export AWS_ACCESS_KEY_ID="..."
@@ -183,7 +183,7 @@ export AWS_SECRET_ACCESS_KEY="..."
 export AWS_SESSION_TOKEN="..."
 ```
 
-### Step 4 — Verifying Identity
+### Step 4 , Verifying Identity
 
 ```
 aws sts get-caller-identity --region us-east-1
@@ -191,7 +191,7 @@ aws sts get-caller-identity --region us-east-1
 
 **Result:** confirmed identity as `complimentary-cognito-unauth-role`.
 
-### Step 5 — Reading DynamoDB Data
+### Step 5 , Reading DynamoDB Data
 
 ```
 aws dynamodb scan \
@@ -202,7 +202,7 @@ aws dynamodb scan \
 
 The scan succeeded due to the IAM misconfiguration.
 
-### Step 6 — Extracting the Flag
+### Step 6 , Extracting the Flag
 
 The flag was found at the bottom of the scan output:
 
