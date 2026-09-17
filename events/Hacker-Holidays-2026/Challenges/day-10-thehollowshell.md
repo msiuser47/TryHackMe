@@ -18,7 +18,7 @@ Compromise the target machine (Byte Lotus Hotel - Shoreline Display Portal) by e
 ## 2. Understanding the Challenge (Recon / Analysis)
 
 ### What did I notice?
-The scenario centers on a portal called the **Shoreline Display Portal**, where staff upload zip archives (called "shells") containing a manifest file (`shell.json`) that lists the included assets (images, stylesheets, etc.). The portal also supports an extra feature called **automation hooks** — commands that a "theme worker" applies automatically shortly after a shell is uploaded.
+The scenario centers on a portal called the **Shoreline Display Portal**, where staff upload zip archives (called "shells") containing a manifest file (`shell.json`) that lists the included assets (images, stylesheets, etc.). The portal also supports an extra feature called **automation hooks** , commands that a "theme worker" applies automatically shortly after a shell is uploaded.
 
 ### What services were open?
 An Nmap scan was run against the target:
@@ -43,7 +43,7 @@ Results:
 ![Challenge 10](../Screenshots/Challenge10/hshell2.png)
 
 ### Why did I move to the next step?
-After logging into the application with the credentials `concierge / StayNoticed2024!`, I found that the upload mechanism accepts a zip file containing `shell.json` and assets restricted to certain extensions (`png jpg gif svg css json`). While inspecting how extracted files were served (`/shells/<id>/shell.json`), I noticed the application does not validate file paths inside the archive before extracting them — a strong indicator of a possible **Zip Slip** vulnerability.
+After logging into the application with the credentials `concierge / StayNoticed2024!`, I found that the upload mechanism accepts a zip file containing `shell.json` and assets restricted to certain extensions (`png jpg gif svg css json`). While inspecting how extracted files were served (`/shells/<id>/shell.json`), I noticed the application does not validate file paths inside the archive before extracting them , a strong indicator of a possible **Zip Slip** vulnerability.
 
 ---
 
@@ -233,7 +233,7 @@ Privilege escalation was not required in this challenge, as the objective was li
 
 - Learned how to practically identify a Zip Slip vulnerability by crafting a custom archive using Python's `zipfile` module.
 - Understood how an "arbitrary file write" vulnerability can escalate into remote code execution when an application includes an automatic execution mechanism (such as automation hooks).
-- Learned that validating file extensions alone is not enough to secure an upload mechanism — the paths of entries inside the archive itself must also be validated.
+- Learned that validating file extensions alone is not enough to secure an upload mechanism , the paths of entries inside the archive itself must also be validated.
 - Practiced a methodical documentation workflow: confirming the vulnerability first with a harmless proof-of-concept, then moving to full exploitation only after confirmation.
 
 ---
