@@ -11,7 +11,7 @@
 
 Employees reported they could no longer log into Outlook, and the Exchange system administrator was unable to access the Exchange Admin Center. Initial triage revealed ransom note files (`readme.txt`) scattered across the Exchange server's file system.
 
-The task was to use **Splunk**, ingesting Sysmon and IIS logs from the compromised Exchange server, to reconstruct the full attack chain — from initial exploitation of the Exchange server through to ransomware deployment.
+The task was to use **Splunk**, ingesting Sysmon and IIS logs from the compromised Exchange server, to reconstruct the full attack chain , from initial exploitation of the Exchange server through to ransomware deployment.
 
 ## 2. Objectives
 
@@ -52,7 +52,7 @@ The task was to use **Splunk**, ingesting Sysmon and IIS logs from the compromis
 ```
 EventCode=11
 ```
-Sorting by the `Image` field in Sysmon's file-creation events revealed a `cmd.exe` binary running from an unusual, non-standard location — a strong indicator of a renamed/dropped payload rather than the legitimate system binary.
+Sorting by the `Image` field in Sysmon's file-creation events revealed a `cmd.exe` binary running from an unusual, non-standard location , a strong indicator of a renamed/dropped payload rather than the legitimate system binary.
 
 **Answer:** `C:\Users\Administrator\Documents\cmd.exe`
 
@@ -78,7 +78,7 @@ Removing the `EventCode=11` filter and inspecting the single matching event's `H
 ```
 Image="C:\Users\Administrator\Documents\cmd.exe" EventCode=11
 ```
-Inspecting the `TargetFilename` field across the returned events showed the same file name written repeatedly across different directories — consistent with a ransom note being dropped into every folder the ransomware touched.
+Inspecting the `TargetFilename` field across the returned events showed the same file name written repeatedly across different directories , consistent with a ransom note being dropped into every folder the ransomware touched.
 
 **Answer:** `readme.txt`
 
@@ -98,14 +98,14 @@ Filtering command-line telemetry for account-management activity revealed a `net
 ```
 EventCode=8
 ```
-Sysmon **Event ID 8 (CreateRemoteThread)** logs when one process creates a thread inside another — a classic process injection/migration technique. Inspecting the `TargetImage` field across the returned events and pivoting into the corresponding event details revealed the source and destination processes of the first migration.
+Sysmon **Event ID 8 (CreateRemoteThread)** logs when one process creates a thread inside another , a classic process injection/migration technique. Inspecting the `TargetImage` field across the returned events and pivoting into the corresponding event details revealed the source and destination processes of the first migration.
 
 **Answer (migrated process, original process):**
 `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`, `C:\Windows\System32\wbem\unsecapp.exe`
 
 ### 5.7 Process Used to Dump System Hashes
 
-Continuing to review the `EventCode=8` results, a second migration event showed the attacker's process (previously injected into `unsecapp.exe`) subsequently accessing `lsass.exe` — the process that holds credential material in memory on Windows.
+Continuing to review the `EventCode=8` results, a second migration event showed the attacker's process (previously injected into `unsecapp.exe`) subsequently accessing `lsass.exe` , the process that holds credential material in memory on Windows.
 
 **Answer:** `C:\Windows\System32\lsass.exe`
 
@@ -115,7 +115,7 @@ Continuing to review the `EventCode=8` results, a second migration event showed 
 ```
 cs_uri_stem=*.aspx* method=POST
 ```
-Filtering IIS logs for POST requests against `.aspx` resources — a common web shell interaction pattern — surfaced a suspicious, randomly-named `.aspx` file under the OWA authentication directory.
+Filtering IIS logs for POST requests against `.aspx` resources , a common web shell interaction pattern , surfaced a suspicious, randomly-named `.aspx` file under the OWA authentication directory.
 
 **Answer:** `i3gfPctK1c2x.aspx`
 
@@ -125,7 +125,7 @@ Filtering IIS logs for POST requests against `.aspx` resources — a common web 
 ```
 CommandLine=*i3gfPctK1c2x.aspx*
 ```
-A single matching event showed the attacker using `attrib.exe` to clear the read-only attribute on the target path immediately before/while writing the web shell into the OWA authentication directory — a directory reachable pre-authentication on a vulnerable Exchange server.
+A single matching event showed the attacker using `attrib.exe` to clear the read-only attribute on the target path immediately before/while writing the web shell into the OWA authentication directory , a directory reachable pre-authentication on a vulnerable Exchange server.
 
 **Answer:**
 ```
@@ -144,7 +144,7 @@ The initial access hint pointed to external threat-intel research on Conti's exp
 CVE-2018-13374 / CVE-2018-13379 (Fortinet path traversal / auth bypass)
       │
       ▼
-CVE-2020-0796 (SMBGhost — SMBv3 remote code execution)
+CVE-2020-0796 (SMBGhost , SMBv3 remote code execution)
       │
       ▼
 Web shell dropped: i3gfPctK1c2x.aspx  (via attrib.exe, OWA auth directory)
@@ -195,7 +195,7 @@ Although the bulk of the intrusion is a Windows/endpoint compromise, the **initi
 
 - **Sysmon Event ID 8 is a powerful, underused signal.** CreateRemoteThread events are one of the clearest ways to catch process injection/migration used for persistence and stealth, and chaining two such events revealed the attacker's entire lateral movement from web shell to LSASS.
 - **IIS + Sysmon correlation closes the gap between web and host telemetry.** The web shell was invisible in host logs alone; only cross-referencing IIS POST requests with the `attrib.exe` command line tied the web-layer compromise to the endpoint-layer activity.
-- **Ransom notes are a lagging indicator, not a leading one.** By the time `readme.txt` files appeared, the attacker had already achieved initial access, persistence, privilege escalation, and credential theft — all of which were logged and detectable well before encryption began.
+- **Ransom notes are a lagging indicator, not a leading one.** By the time `readme.txt` files appeared, the attacker had already achieved initial access, persistence, privilege escalation, and credential theft , all of which were logged and detectable well before encryption began.
 - **Unpatched, internet-facing Exchange infrastructure remains a top ransomware entry vector.** This intrusion chain mirrors real-world Conti operations, where known, patchable CVEs in edge infrastructure are consistently the first domino.
 
 
