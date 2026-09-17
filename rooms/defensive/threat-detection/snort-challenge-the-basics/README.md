@@ -8,7 +8,7 @@
 
 ## 1. Scenario
 
-This room is a hands-on exercise in writing, applying, and troubleshooting Snort Intrusion Detection System (IDS) rules against a series of provided PCAP files. Rather than a single narrative attack chain, each task isolates a distinct detection skill — protocol filtering, content/signature matching, syntax debugging, and applying externally sourced rules against known, high-severity vulnerabilities. The overarching goal was to build practical fluency in translating an investigative question ("did this happen in the traffic?") into a working Snort rule and correctly interpreting the resulting logs.
+This room is a hands-on exercise in writing, applying, and troubleshooting Snort Intrusion Detection System (IDS) rules against a series of provided PCAP files. Rather than a single narrative attack chain, each task isolates a distinct detection skill , protocol filtering, content/signature matching, syntax debugging, and applying externally sourced rules against known, high-severity vulnerabilities. The overarching goal was to build practical fluency in translating an investigative question ("did this happen in the traffic?") into a working Snort rule and correctly interpreting the resulting logs.
 
 ## 2. Objectives
 
@@ -60,7 +60,7 @@ Reading specific packets from the resulting log with `-n <N>` allowed direct ins
 | Source IP of packet 65 | `snort -r snort.log.* -n 65` | `145.254.160.237` |
 | Source port of packet 65 | `snort -r snort.log.* -n 65` | `3372` |
 
-This task reinforced that Snort's raw packet log is a full protocol-level record — not just an alert summary — and can answer detailed header-level questions once a matching rule has generated the capture.
+This task reinforced that Snort's raw packet log is a full protocol-level record , not just an alert summary , and can answer detailed header-level questions once a matching rule has generated the capture.
 
 ## 5. Task: FTP Traffic Detection
 
@@ -111,7 +111,7 @@ Only one packet matched. Reviewing the log with `strings` identified the authori
 ```
 alert tcp any any -> any any (msg:"GIF File Detected"; content:"GIF89a"; depth:6; sid:10000000010)
 ```
-**Image format confirmed:** `GIF89a` — **Packets detected:** `4`
+**Image format confirmed:** `GIF89a` , **Packets detected:** `4`
 
 **Torrent metafile detection** (`.torrent` extension string):
 ```
@@ -127,7 +127,7 @@ Reviewing this log surfaced further embedded metadata:
 | MIME type | `application/x-bittorrent` |
 | Hostname (tracker) | `tracker2.torrentbox.com` |
 
-The `depth` option in each rule is a deliberate performance/precision choice — limiting the content search to only the first N bytes of the payload (matching the known header length) avoids false positives from the same byte sequence appearing later in unrelated traffic.
+The `depth` option in each rule is a deliberate performance/precision choice , limiting the content search to only the first N bytes of the payload (matching the known header length) avoids false positives from the same byte sequence appearing later in unrelated traffic.
 
 ## 7. Task: Troubleshooting Rule Syntax and Logic Errors
 
@@ -137,11 +137,11 @@ This task provided seven broken rule files, each with a distinct defect to diagn
 |---|---|---|---|---|
 | `local-1.rules` | Syntax | Missing whitespace between `any` and the rule options block `(msg:...)` | Insert a space | `16` |
 | `local-2.rules` | Syntax | Missing destination port field for an ICMP rule (ICMP has no ports, but the rule's field structure was still malformed) | `alert icmp any any -> any any (...)` | `68` |
-| `local-3.rules` | Logic | Duplicate `sid` values across two rules — Snort requires globally unique rule IDs | Assign unique `sid` values | `87` |
+| `local-3.rules` | Logic | Duplicate `sid` values across two rules , Snort requires globally unique rule IDs | Assign unique `sid` values | `87` |
 | `local-4.rules` | Syntax + Logic | `msg` option terminated with `:` instead of `;`, plus a duplicate `sid` | Correct punctuation and reassign `sid` | `90` |
 | `local-5.rules` | Logic | Use of a nonexistent `<-` directional operator | Replace with the bidirectional `<>` operator | `155` |
 | `local-6.rules` | Logic | Case-sensitive `content` match missed lowercase/mixed-case `GET` requests | Add the `nocase` modifier | `2` |
-| `local-7.rules` | Logic (missing required option) | Rule lacked the mandatory `msg` option, making its purpose undocumented and its match (an `.html` file signature) uninterpretable | Add a descriptive `msg` field | — |
+| `local-7.rules` | Logic (missing required option) | Rule lacked the mandatory `msg` option, making its purpose undocumented and its match (an `.html` file signature) uninterpretable | Add a descriptive `msg` field | , |
 
 **Example corrected rules:**
 ```
@@ -155,9 +155,9 @@ alert tcp any any <> any 80 (msg: "GET Request Found"; content:"|67 65 74|"; noc
 alert tcp any any <> any 80 (msg:"html detected"; content:"|2E 68 74 6D 6C|"; sid:100001; rev:1;)
 ```
 
-This task is a practical demonstration that Snort rule failures fall into two distinct classes — **syntax errors** (which Snort refuses to load and reports directly) and **logic errors** (which Snort loads without complaint but which silently under- or over-match traffic) — and that diagnosing the second category requires understanding the traffic itself, not just the rule grammar.
+This task is a practical demonstration that Snort rule failures fall into two distinct classes , **syntax errors** (which Snort refuses to load and reports directly) and **logic errors** (which Snort loads without complaint but which silently under- or over-match traffic) , and that diagnosing the second category requires understanding the traffic itself, not just the rule grammar.
 
-## 8. Task: External Rules — MS17-010 (EternalBlue)
+## 8. Task: External Rules , MS17-010 (EternalBlue)
 
 **Objective:** apply a provided, pre-built rule set to detect exploitation of **MS17-010**, the SMBv1 remote code execution vulnerability exploited by the EternalBlue toolkit (notably used in the WannaCry and NotPetya outbreaks).
 
@@ -166,7 +166,7 @@ sudo snort -A full -c local.rules -r ms-17-010.pcap
 ```
 **Packets detected:** `25154`
 
-A follow-on custom rule was written to isolate a specific exploitation indicator — the `\IPC$` administrative share, commonly accessed during SMB-based exploitation for null-session/pipe interaction:
+A follow-on custom rule was written to isolate a specific exploitation indicator , the `\IPC$` administrative share, commonly accessed during SMB-based exploitation for null-session/pipe interaction:
 
 ```
 alert tcp any any -> any 445 (msg: "Exploit Detected!"; flow: to_server, established; content: "IPC$"; sid:20244225; rev:3;)
@@ -179,9 +179,9 @@ Reviewing the resulting log with `strings` recovered the exact UNC path targeted
 
 **CVSS v2 score of MS17-010:** `9.3` (confirmed via external research)
 
-The `flow: to_server, established;` option is worth highlighting — it restricts matching to packets sent toward the server on an already-established TCP session, which meaningfully reduces false positives compared to a stateless content match alone.
+The `flow: to_server, established;` option is worth highlighting , it restricts matching to packets sent toward the server on an already-established TCP session, which meaningfully reduces false positives compared to a stateless content match alone.
 
-## 9. Task: External Rules — Log4j (Log4Shell)
+## 9. Task: External Rules , Log4j (Log4Shell)
 
 **Objective:** apply a provided rule set to detect exploitation of **Log4Shell (CVE-2021-44228)**, the critical Apache Log4j remote code execution vulnerability triggered via JNDI lookup injection in logged input.
 
@@ -210,7 +210,7 @@ Cross-referencing the alert file against the known malicious source IP and the `
 
 **IP ID:** `62808`
 
-Decoding the recovered Base64 string surfaced the attacker's actual injected command — the payload retrieved via the classic Log4Shell chain: a crafted string in a logged field (e.g., a `User-Agent` or similar header) triggering a JNDI lookup, which in turn causes the vulnerable application to fetch and execute a remote class/command.
+Decoding the recovered Base64 string surfaced the attacker's actual injected command , the payload retrieved via the classic Log4Shell chain: a crafted string in a logged field (e.g., a `User-Agent` or similar header) triggering a JNDI lookup, which in turn causes the vulnerable application to fetch and execute a remote class/command.
 
 **CVSS v2 score of Log4Shell:** `9.3` (confirmed via external research)
 
@@ -231,18 +231,18 @@ Since Log4Shell is fundamentally an application-layer vulnerability, a brief OWA
 
 | OWASP Category | Relevance |
 |---|---|
-| **A03:2021 – Injection** | Log4Shell is a textbook injection vulnerability — attacker-controlled input logged by the application triggers a JNDI lookup, leading to remote code execution |
+| **A03:2021 – Injection** | Log4Shell is a textbook injection vulnerability , attacker-controlled input logged by the application triggers a JNDI lookup, leading to remote code execution |
 | **A06:2021 – Vulnerable and Outdated Components** | The underlying root cause is the use of a vulnerable, unpatched version of the widely-embedded Log4j logging library |
 
 ## 12. Key Takeaways
 
-- **Directional operators matter more than they first appear.** Using `<>` versus `->` versus a two-rule pair changes not just rule count but detection completeness — several of the troubleshooting tasks hinged entirely on this distinction.
-- **Content-based signatures generalize well beyond "malware" detection.** The same `content` matching technique used to catch a JNDI exploit string was equally effective at fingerprinting benign file types (PNG, GIF, torrent) purely from header bytes — detection engineering is protocol/format-agnostic at its core.
-- **Snort distinguishes syntax failures from logic failures, and only warns you about the first kind.** A rule that loads cleanly can still silently fail to match intended traffic (case sensitivity, wrong operator, missing modifier) — validating detected-packet counts against expectations is essential, not optional.
+- **Directional operators matter more than they first appear.** Using `<>` versus `->` versus a two-rule pair changes not just rule count but detection completeness , several of the troubleshooting tasks hinged entirely on this distinction.
+- **Content-based signatures generalize well beyond "malware" detection.** The same `content` matching technique used to catch a JNDI exploit string was equally effective at fingerprinting benign file types (PNG, GIF, torrent) purely from header bytes , detection engineering is protocol/format-agnostic at its core.
+- **Snort distinguishes syntax failures from logic failures, and only warns you about the first kind.** A rule that loads cleanly can still silently fail to match intended traffic (case sensitivity, wrong operator, missing modifier) , validating detected-packet counts against expectations is essential, not optional.
 - **External, community-maintained rule sets are a force multiplier for known CVEs**, but pairing them with a hand-written, narrowly-scoped rule (e.g., isolating `IPC$` or a specific payload size range) is what turns a broad "exploitation detected" alert into an actionable, specific IOC.
 
 ## 13. Conclusion
 
-This room built practical fluency across the full Snort rule-writing lifecycle: constructing rules from a detection requirement, reading raw packet logs for forensic detail, debugging both syntax and logic defects, and layering custom rules on top of external, CVE-specific rule sets to extract concrete indicators of compromise from real exploitation traffic (EternalBlue and Log4Shell). The recurring theme is that effective IDS tuning is iterative — broad rules establish that something happened, and progressively narrower `content`/`dsize`/`flow` refinements are what establish exactly what happened and to whom.
+This room built practical fluency across the full Snort rule-writing lifecycle: constructing rules from a detection requirement, reading raw packet logs for forensic detail, debugging both syntax and logic defects, and layering custom rules on top of external, CVE-specific rule sets to extract concrete indicators of compromise from real exploitation traffic (EternalBlue and Log4Shell). The recurring theme is that effective IDS tuning is iterative , broad rules establish that something happened, and progressively narrower `content`/`dsize`/`flow` refinements are what establish exactly what happened and to whom.
 
 
