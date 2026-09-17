@@ -210,7 +210,7 @@ It was then uploaded to:
 /import
 ```
 
-This could also be submitted directly through the upload field, provided a netcat listener was prepared beforehand — resulting in remote command execution on the target machine.
+This could also be submitted directly through the upload field, provided a netcat listener was prepared beforehand , resulting in remote command execution on the target machine.
 
 ### 5. Obtaining a Reverse Shell
 
@@ -234,7 +234,7 @@ Access to the machine was obtained as the user:
 bartender
 ```
 
-**User Flag** — located using:
+**User Flag** , located using:
 
 ```
 find / -name user.txt 2>/dev/null
@@ -387,7 +387,7 @@ The same password should never be reused between internal services and the `root
 - Learned how to identify and exploit a YAML Deserialization vulnerability.
 - Learned how to use a reverse shell to access a system.
 - Learned the importance of inspecting root-owned running services during the privilege escalation phase.
-- Realized that gaining access as a regular user does not mean the assessment is complete — a path to higher privileges should always be sought.
+- Realized that gaining access as a regular user does not mean the assessment is complete , a path to higher privileges should always be sought.
 - Learned that privilege escalation does not always rely on exploiting software vulnerabilities; it can result from poor credential management.
 - Learned the importance of inspecting running processes with `ps aux`, as they may expose sensitive information such as passwords or access keys.
 - Learned that passing passwords via command-line arguments is an insecure practice.
