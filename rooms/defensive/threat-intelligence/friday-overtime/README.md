@@ -36,7 +36,7 @@ This simulates a realistic **CTI triage → malware family attribution → infra
 
 ## 3. Step-by-Step Walkthrough
 
-### Task 1 — Who shared the malware samples?
+### Task 1 , Who shared the malware samples?
 
 The initial artifact (email/dashboard) discloses the sender's identity in the message metadata/body.
 
@@ -44,7 +44,7 @@ The initial artifact (email/dashboard) discloses the sender's identity in the me
 
 ---
 
-### Task 2 — SHA1 hash of `pRsm.dll` inside `samples.zip`
+### Task 2 , SHA1 hash of `pRsm.dll` inside `samples.zip`
 
 **Steps:**
 1. Download the attached `samples.zip`.
@@ -61,7 +61,7 @@ The initial artifact (email/dashboard) discloses the sender's identity in the me
 
 ---
 
-### Task 3 — Which malware framework utilizes these DLLs as add-on modules?
+### Task 3 , Which malware framework utilizes these DLLs as add-on modules?
 
 **Steps:**
 1. Submit the SHA1 hash to **VirusTotal** and/or **Cisco Talos** for reputation and classification data.
@@ -71,7 +71,7 @@ The initial artifact (email/dashboard) discloses the sender's identity in the me
 
 ---
 
-### Task 4 — Which MITRE ATT&CK Technique is linked to using `pRsm.dll` in this framework?
+### Task 4 , Which MITRE ATT&CK Technique is linked to using `pRsm.dll` in this framework?
 
 **Steps:**
 1. Perform OSINT research on "MgBot" to locate public threat intelligence reporting.
@@ -80,15 +80,15 @@ The initial artifact (email/dashboard) discloses the sender's identity in the me
 
 **Finding:** The `pRsm.dll` module corresponds to MITRE ATT&CK technique:
 
-**`T1123` — Audio Capture**
+**`T1123` , Audio Capture**
 
 This aligns with ESET's reporting on MgBot's modular plugin design, where individual DLLs provide discrete collection capabilities (e.g., audio recording) that are loaded on demand by the core implant.
 
-*(See Section 4 — MITRE ATT&CK Mapping — for the full technique breakdown.)*
+*(See Section 4 , MITRE ATT&CK Mapping , for the full technique breakdown.)*
 
 ---
 
-### Task 5 — CyberChef defanged URL of the malicious download location first seen on 2020-11-02
+### Task 5 , CyberChef defanged URL of the malicious download location first seen on 2020-11-02
 
 **Steps:**
 1. Locate the IOC table/timeline in the ESET article, filtering for the date **2020-11-02**.
@@ -102,7 +102,7 @@ hxxp[://]update[.]browser[.]qq[.]com/qmbs/QQ/QQUrlMgr_QQ88_4296[.]exe
 
 ---
 
-### Task 6 — CyberChef defanged IP address of the C2 server first detected on 2020-09-14
+### Task 6 , CyberChef defanged IP address of the C2 server first detected on 2020-09-14
 
 **Steps:**
 1. Search the ESET article/IOC list for the date **2020-09-14**.
@@ -116,7 +116,7 @@ hxxp[://]update[.]browser[.]qq[.]com/qmbs/QQ/QQUrlMgr_QQ88_4296[.]exe
 
 ---
 
-### Task 7 — SHA1 hash of the SpyAgent-family Android spyware hosted on the same IP (Nov 16, 2022)
+### Task 7 , SHA1 hash of the SpyAgent-family Android spyware hosted on the same IP (Nov 16, 2022)
 
 **Steps:**
 1. Pivot on the C2 IP (`122.10.90.12`) inside **VirusTotal**.
@@ -158,8 +158,8 @@ This engagement is a **malware/threat-intelligence analysis exercise**, not a we
 
 | Type | Indicator (Defanged) |
 |---|---|
-| File Hash (SHA1) — MgBot DLL | `9d1ecbbe8637fed0d89fca1af35ea821277ad2e8` |
-| File Hash (SHA1) — SpyAgent Android Sample | `1c1fe906e822012f6235fcc53f601d006d15d7be` |
+| File Hash (SHA1) , MgBot DLL | `9d1ecbbe8637fed0d89fca1af35ea821277ad2e8` |
+| File Hash (SHA1) , SpyAgent Android Sample | `1c1fe906e822012f6235fcc53f601d006d15d7be` |
 | Malicious URL | `hxxp[://]update[.]browser[.]qq[.]com/qmbs/QQ/QQUrlMgr_QQ88_4296[.]exe` |
 | C2 IP Address | `122[.]10[.]90[.]12` |
 | Malware Family | MgBot (Evasive Panda / DaggerFly APT) |
@@ -171,7 +171,7 @@ This engagement is a **malware/threat-intelligence analysis exercise**, not a we
 
 - Malware family attribution can often be achieved quickly by cross-referencing file hashes against **VirusTotal** and **Talos** community intelligence rather than performing full static/dynamic analysis from scratch.
 - Public threat intelligence reporting (e.g., ESET, Talos, Mandiant) is a critical OSINT resource for confirming ATT&CK technique mappings and historical IOC timelines.
-- **VirusTotal's "Relations" graph** is a powerful pivoting tool for uncovering additional malware families sharing the same C2 infrastructure — a technique broadly applicable to real-world infrastructure hunting.
+- **VirusTotal's "Relations" graph** is a powerful pivoting tool for uncovering additional malware families sharing the same C2 infrastructure , a technique broadly applicable to real-world infrastructure hunting.
 - Defanging IOCs (via **CyberChef**) is a standard and necessary practice before including indicators in any shared threat report, preventing accidental execution/click-through of live malicious artifacts.
 
 ---
@@ -179,7 +179,7 @@ This engagement is a **malware/threat-intelligence analysis exercise**, not a we
 ## 8. References
 
 - ESET Research, *"Evasive Panda APT group delivers malware via updates for popular Chinese software,"* WeLiveSecurity.
-- TryHackMe — *Friday Overtime* room.
-- MITRE ATT&CK® Framework — [attack.mitre.org](https://attack.mitre.org)
-- VirusTotal — [virustotal.com](https://www.virustotal.com)
-- CyberChef — [gchq.github.io/CyberChef](https://gchq.github.io/CyberChef/)
+- TryHackMe , *Friday Overtime* room.
+- MITRE ATT&CK® Framework , [attack.mitre.org](https://attack.mitre.org)
+- VirusTotal , [virustotal.com](https://www.virustotal.com)
+- CyberChef , [gchq.github.io/CyberChef](https://gchq.github.io/CyberChef/)
