@@ -37,9 +37,9 @@ sudo nmap -A -vv -T4 -Pn <target-ip>
 
 With no credentials available for SSH at this stage, enumeration focused entirely on the two web services.
 
-## 4. Enumeration — Port 80
+## 4. Enumeration , Port 80
 
-Port 80 presented a themed static page with no authentication in place — an immediate signal to check for exposed content rather than assume the service was purely cosmetic. Directory/file discovery was run to identify hidden resources:
+Port 80 presented a themed static page with no authentication in place , an immediate signal to check for exposed content rather than assume the service was purely cosmetic. Directory/file discovery was run to identify hidden resources:
 
 ```bash
 gobuster dir -u http://<target-ip> -w /usr/share/dirb/wordlists/common.txt -x txt,php,html,zip
@@ -47,10 +47,10 @@ gobuster dir -u http://<target-ip> -w /usr/share/dirb/wordlists/common.txt -x tx
 
 This surfaced two notable findings:
 
-- **`secret.txt`** — an unlisted text file containing information relevant to later stages of the engagement.
-- **`phpinfo.php`** — a debug artifact left accessible in production, disclosing PHP configuration and environment details that should never be exposed externally.
+- **`secret.txt`** , an unlisted text file containing information relevant to later stages of the engagement.
+- **`phpinfo.php`** , a debug artifact left accessible in production, disclosing PHP configuration and environment details that should never be exposed externally.
 
-## 5. Enumeration — Port 8080 and Credential Access
+## 5. Enumeration , Port 8080 and Credential Access
 
 Port 8080 required authentication via HTTP Basic-style login. Given the challenge's thematic naming convention, `joker` was tested as a candidate username, and a password brute-force was run against it:
 
@@ -60,7 +60,7 @@ hydra -l joker -P /usr/share/wordlists/rockyou.txt <target-ip> -s 8080 http-get
 
 This successfully recovered a valid password, granting access to the service, which was identified as a **Joomla** CMS instance.
 
-## 6. Web Application Assessment — Nikto
+## 6. Web Application Assessment , Nikto
 
 With authenticated access available, Nikto was run against the CMS to identify further misconfigurations:
 
@@ -72,7 +72,7 @@ nikto -h http://<target-ip>:8080/ -id joker:<password>
 
 - A `robots.txt` file, disclosing paths not intended for search-engine indexing.
 - An exposed `/administrator/` path redirecting to the Joomla admin login panel.
-- A downloadable, password-protected **`backup.zip`** archive — a significant find, since backup archives frequently contain database dumps, configuration files, or credentials.
+- A downloadable, password-protected **`backup.zip`** archive , a significant find, since backup archives frequently contain database dumps, configuration files, or credentials.
 
 ## 7. Cracking the Backup Archive
 
@@ -83,7 +83,7 @@ zip2john backup.zip > hash.txt
 john hash.txt --wordlist=/usr/share/wordlists/rockyou.txt
 ```
 
-The recovered archive password matched the credentials already obtained via Hydra — a useful confirmation that password reuse was present across the environment, but not a strictly necessary step given the credentials were already known.
+The recovered archive password matched the credentials already obtained via Hydra , a useful confirmation that password reuse was present across the environment, but not a strictly necessary step given the credentials were already known.
 
 ## 8. Extracting Joomla Super-User Credentials
 
@@ -104,7 +104,7 @@ This SQL dump exposed the Joomla **super-user** account, including its username 
 
 ## 9. Remote Code Execution via Joomla Template Editing
 
-With super-user access to the Joomla admin panel, the built-in template editor was used to achieve code execution — a well-known post-authentication RCE technique against Joomla, since template PHP files are directly served by the web server and editable from within the admin interface.
+With super-user access to the Joomla admin panel, the built-in template editor was used to achieve code execution , a well-known post-authentication RCE technique against Joomla, since template PHP files are directly served by the web server and editable from within the admin interface.
 
 A PHP Meterpreter payload was generated:
 
@@ -129,7 +129,7 @@ Verifying the shell's identity confirmed access as **`www-data`**.
 
 ## 10. Privilege Escalation Path Identification
 
-Reviewing the current user's group memberships revealed inclusion in the **`lxd`** group — a well-documented Linux privilege-escalation vector, since LXD-managed containers can be configured to mount the host filesystem with elevated (root) access, and group membership alone is often sufficient to abuse this without requiring `sudo`.
+Reviewing the current user's group memberships revealed inclusion in the **`lxd`** group , a well-documented Linux privilege-escalation vector, since LXD-managed containers can be configured to mount the host filesystem with elevated (root) access, and group membership alone is often sufficient to abuse this without requiring `sudo`.
 
 ## 11. Privilege Escalation via LXD
 
@@ -164,7 +164,7 @@ lxc start ignite
 lxc exec ignite /bin/sh
 ```
 
-Because the container was launched in **privileged** mode with the host's root filesystem (`/`) bind-mounted into it, any process inside the container effectively has full read/write access to the host as root — this is the core of the LXD group-membership escalation technique.
+Because the container was launched in **privileged** mode with the host's root filesystem (`/`) bind-mounted into it, any process inside the container effectively has full read/write access to the host as root , this is the core of the LXD group-membership escalation technique.
 
 ## 12. Capturing the Final Flag
 
@@ -268,12 +268,12 @@ final.txt captured
 
 ## 18. Key Takeaways
 
-- **Backup files are frequently the weakest link, not the CMS itself.** The path to the Joomla super-user account did not come from exploiting Joomla directly — it came from a forgotten, downloadable database backup sitting alongside the application.
-- **Credential reuse multiplies the impact of a single leak.** Recovering one password (via brute-force) turned out to also unlock a supposedly separate, "protected" archive — a pattern that consistently expands the blast radius of otherwise-contained compromises.
+- **Backup files are frequently the weakest link, not the CMS itself.** The path to the Joomla super-user account did not come from exploiting Joomla directly , it came from a forgotten, downloadable database backup sitting alongside the application.
+- **Credential reuse multiplies the impact of a single leak.** Recovering one password (via brute-force) turned out to also unlock a supposedly separate, "protected" archive , a pattern that consistently expands the blast radius of otherwise-contained compromises.
 - **CMS admin panels are effectively code-execution panels.** Any authenticated administrative access to a CMS with a template/plugin editor should be treated as equivalent to direct server access, since it almost always is.
 - **Auxiliary group memberships deserve the same scrutiny as sudo rights.** Membership in groups like `lxd` or `docker` is easy to overlook during hardening reviews but is functionally equivalent to unrestricted root access.
 
 ## 19. Conclusion
 
-This engagement demonstrates a realistic compromise chain built from cascading, individually moderate weaknesses: exposed diagnostic and backup files, weak and reused credentials, an administrative CMS feature that doubles as a code-execution primitive, and an over-privileged service account group membership. No single finding required a zero-day or highly sophisticated exploit — proper credential hygiene, backup handling, and privilege auditing would have broken this chain at multiple independent points.
+This engagement demonstrates a realistic compromise chain built from cascading, individually moderate weaknesses: exposed diagnostic and backup files, weak and reused credentials, an administrative CMS feature that doubles as a code-execution primitive, and an over-privileged service account group membership. No single finding required a zero-day or highly sophisticated exploit , proper credential hygiene, backup handling, and privilege auditing would have broken this chain at multiple independent points.
 
