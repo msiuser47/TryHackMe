@@ -1,4 +1,4 @@
-# 🛡️ TryHackMe — Cybersecurity Labs & Write-ups
+# 🛡️ TryHackMe , Cybersecurity Labs & Write-ups
 
 [![TryHackMe Badge](https://img.shields.io/badge/Platform-TryHackMe-red?style=flat-square&logo=tryhackme)](https://tryhackme.com/)
 [![Status](https://img.shields.io/badge/Repository-Scalable%20%26%20Active-brightgreen?style=flat-square)](#)
