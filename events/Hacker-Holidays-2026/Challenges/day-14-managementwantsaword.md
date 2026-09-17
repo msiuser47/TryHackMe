@@ -18,10 +18,10 @@ Analyze a full forensic triage (KAPE collection) of a guest laptop left behind i
 ## 2. Understanding the Challenge (Recon / Analysis)
 
 ### What did I notice?
-The Concierge Briefing framed this as a full digital forensics investigation: IT had already pulled a **complete triage of Vera's laptop** before wiping it. The task hinted that a password was "not as locked away as she thought" — and a social-media hint from `@0xMia` reinforced this directly: *"a browser will remember things for you that you never told anyone else... not every hidden file needs a password cracker, some of them just need a really good memory"* — pointing squarely at **browser-saved credentials** as the key, and hinting at a specific tool/version number (`1.26.29`) later relevant to identifying an encryption format.
+The Concierge Briefing framed this as a full digital forensics investigation: IT had already pulled a **complete triage of Vera's laptop** before wiping it. The task hinted that a password was "not as locked away as she thought" , and a social-media hint from `@0xMia` reinforced this directly: *"a browser will remember things for you that you never told anyone else... not every hidden file needs a password cracker, some of them just need a really good memory"* , pointing squarely at **browser-saved credentials** as the key, and hinting at a specific tool/version number (`1.26.29`) later relevant to identifying an encryption format.
 
 ### What services / artifacts were provided?
-The provided task files were a **KAPE** (Kroll Artifact Parser and Extractor) collection — a standard forensic triage output — containing a full snapshot of Vera's Windows user profile and system hives:
+The provided task files were a **KAPE** (Kroll Artifact Parser and Extractor) collection , a standard forensic triage output , containing a full snapshot of Vera's Windows user profile and system hives:
 ```
 C/Users/vera/Documents/backup
 C/Users/vera/AppData/Local/Google/Chrome For Testing/User Data/...
@@ -41,7 +41,7 @@ xxd -l 64 C/Users/vera/Documents/backup
 00000000: f372 f7cc d607 4b17 a8aa 8865 12af abdf  .r....K....e....
 ...
 ```
-No recognizable file signature and high-entropy, random-looking bytes — a strong indicator of an **encrypted container**, not a corrupted or generic binary file.
+No recognizable file signature and high-entropy, random-looking bytes , a strong indicator of an **encrypted container**, not a corrupted or generic binary file.
 
 ### What tools did I use?
 - `file` and `xxd` for initial file-type and entropy inspection.
@@ -55,7 +55,7 @@ No recognizable file signature and high-entropy, random-looking bytes — a stro
 ![Challenge 14](../Screenshots/Challenge14/Management1.png)
 
 ### Why did I move to the next step?
-Once the browser artifacts confirmed Chrome had a **saved login** for an interesting-looking internal service (`http://bytelotus.thm:8080/`, username `VeraSecretVault`), decrypting that saved password became the clear priority — since Chrome passwords on Windows are protected by **DPAPI**, which is itself tied to the user's Windows logon credentials, the investigation naturally extended into dumping the local SAM/SECURITY/SYSTEM hives to recover those credentials.
+Once the browser artifacts confirmed Chrome had a **saved login** for an interesting-looking internal service (`http://bytelotus.thm:8080/`, username `VeraSecretVault`), decrypting that saved password became the clear priority , since Chrome passwords on Windows are protected by **DPAPI**, which is itself tied to the user's Windows logon credentials, the investigation naturally extended into dumping the local SAM/SECURITY/SYSTEM hives to recover those credentials.
 
 ---
 
@@ -63,9 +63,9 @@ Once the browser artifacts confirmed Chrome had a **saved login** for an interes
 
 This challenge doesn't center on a single software bug, but on a **chain of weak security practices**, each of which compounded the next:
 
-1. **Windows DPAPI protection anchored to a weak/known local password.** Chrome's saved-password encryption key is itself protected by the Windows user's DPAPI master key, which can be decrypted once the user's Windows logon password (or NTLM hash) is known. In this case, an LSA secret (`DefaultPassword`) leaked a plaintext password (`minivera`) directly from the SAM/SECURITY/SYSTEM registry hives — meaning anyone with offline access to those hives could ultimately decrypt **any** DPAPI-protected secret on the machine, including saved browser passwords.
+1. **Windows DPAPI protection anchored to a weak/known local password.** Chrome's saved-password encryption key is itself protected by the Windows user's DPAPI master key, which can be decrypted once the user's Windows logon password (or NTLM hash) is known. In this case, an LSA secret (`DefaultPassword`) leaked a plaintext password (`minivera`) directly from the SAM/SECURITY/SYSTEM registry hives , meaning anyone with offline access to those hives could ultimately decrypt **any** DPAPI-protected secret on the machine, including saved browser passwords.
 2. **Sensitive credentials stored in the browser's password manager.** A password protecting what turned out to be an internal, sensitive-sounding service (`VeraSecretVault`) was saved directly in Chrome rather than in a dedicated secrets manager, making it recoverable through standard DPAPI-decryption forensics once the underlying Windows credential was compromised.
-3. **Password reuse across trust boundaries.** The password Chrome had saved for `http://bytelotus.thm:8080/` turned out to also be the passphrase protecting a completely separate, far more sensitive artifact — a VeraCrypt-encrypted container (`Documents/backup`) holding "secret financial documents." Reusing one recovered credential to protect multiple, unrelated secrets meant that compromising the weakest link (the DPAPI/browser chain) cascaded into full compromise of the strongest one (the encrypted volume).
+3. **Password reuse across trust boundaries.** The password Chrome had saved for `http://bytelotus.thm:8080/` turned out to also be the passphrase protecting a completely separate, far more sensitive artifact , a VeraCrypt-encrypted container (`Documents/backup`) holding "secret financial documents." Reusing one recovered credential to protect multiple, unrelated secrets meant that compromising the weakest link (the DPAPI/browser chain) cascaded into full compromise of the strongest one (the encrypted volume).
 
 ---
 
@@ -119,7 +119,7 @@ The `Web Data` autofill table confirmed the same username (`VeraSecretVault`) ha
 file C/Users/vera/Documents/backup
 xxd -l 64 C/Users/vera/Documents/backup
 ```
-Result: opaque, high-entropy binary data — a likely encrypted volume.
+Result: opaque, high-entropy binary data , a likely encrypted volume.
 
 **Step 2 - Recover the saved Chrome credential's encrypted blob**
 ```
@@ -233,10 +233,10 @@ The flag was found inside the invoice document:
 
 ### Why each step succeeded
 - **`impacket-secretsdump` against offline SAM/SYSTEM/SECURITY hives**: succeeded because these registry hives were fully present in the KAPE triage and contained an LSA secret (`DefaultPassword`) storing Vera's password in a recoverable form.
-- **`impacket-dpapi masterkey`**: succeeded because DPAPI master keys are derived from (among other things) the user's Windows logon password — once that password was known, the master key blob could be decrypted entirely offline.
+- **`impacket-dpapi masterkey`**: succeeded because DPAPI master keys are derived from (among other things) the user's Windows logon password , once that password was known, the master key blob could be decrypted entirely offline.
 - **Manual Chrome AES-key extraction**: succeeded because Chrome's `Local State` file stores its AES key DPAPI-encrypted (not tied to any additional secret beyond DPAPI itself), so decrypting it was a direct, deterministic consequence of already holding the user's master key.
 - **AES-256-GCM decryption of the saved password**: succeeded because Chrome's `v10`/`v11` password format is a well-documented, fixed layout (12-byte nonce + ciphertext + 16-byte tag), so once the AES key was known, decryption was straightforward.
-- **`cryptsetup tcryptOpen --veracrypt`**: succeeded because the recovered Chrome password was, in fact, reused as the VeraCrypt container's actual passphrase — collapsing an otherwise strong, independent layer of encryption down to the strength of a single already-compromised browser-saved credential.
+- **`cryptsetup tcryptOpen --veracrypt`**: succeeded because the recovered Chrome password was, in fact, reused as the VeraCrypt container's actual passphrase , collapsing an otherwise strong, independent layer of encryption down to the strength of a single already-compromised browser-saved credential.
 
 ---
 
@@ -252,18 +252,18 @@ The flag was found inside the invoice document:
 THM{*****}
 ```
 
-This was a pure digital forensics and applied cryptography challenge — no live exploitation of a running service was involved; the entire chain was executed offline against artifacts collected from a physical device.
+This was a pure digital forensics and applied cryptography challenge , no live exploitation of a running service was involved; the entire chain was executed offline against artifacts collected from a physical device.
 
 ---
 
 ## 7. Mitigation
 
 - Never store credentials for sensitive internal services in a browser's built-in password manager without additional protection (e.g., an OS-level TPM-backed vault, a dedicated password manager with a master password independent of the OS login, or hardware-backed credential storage).
-- Avoid password/passphrase reuse across trust boundaries — a browser-saved web credential should never double as the passphrase for an encrypted volume containing highly sensitive data.
-- Ensure Windows systems do not store recoverable plaintext passwords as LSA secrets (e.g., via unattended-install answer files, autologon configuration, or scheduled task credentials) — audit and remove any `DefaultPassword`/autologon configuration that isn't strictly necessary.
+- Avoid password/passphrase reuse across trust boundaries , a browser-saved web credential should never double as the passphrase for an encrypted volume containing highly sensitive data.
+- Ensure Windows systems do not store recoverable plaintext passwords as LSA secrets (e.g., via unattended-install answer files, autologon configuration, or scheduled task credentials) , audit and remove any `DefaultPassword`/autologon configuration that isn't strictly necessary.
 - Harden local account passwords so that, even if SAM/SYSTEM/SECURITY hives are exfiltrated, hashes are resistant to fast offline recovery (avoid short, memorable/predictable passwords like `minivera`).
 - Restrict physical and offline access to devices containing DPAPI-protected secrets; DPAPI protection is only as strong as the user's Windows credential, and both can be recovered entirely offline once the hives are copied.
-- Encrypt or securely wipe devices before disposal or reassignment (as this triage scenario itself implies — the laptop was about to be wiped for the next guest, underscoring the value of proper sanitization procedures beforehand).
+- Encrypt or securely wipe devices before disposal or reassignment (as this triage scenario itself implies , the laptop was about to be wiped for the next guest, underscoring the value of proper sanitization procedures beforehand).
 - Use a unique, independently-managed passphrase for encrypted containers (VeraCrypt or otherwise) rather than anything derivable from browser history, autofill data, or other recoverable artifacts.
 
 ---
