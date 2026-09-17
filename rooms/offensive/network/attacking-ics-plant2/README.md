@@ -35,7 +35,7 @@ The attacker's goal is not to gain code execution or steal credentials , it is t
 > ![alt](screenshots/icsoil2.png)
 > *Nmap results showing the lab machine's open ports, confirming Modbus/TCP (502) and the HTTP service used to serve `flag1.txt`/`flag2.txt`.*
 
-> ![alt](screenshots/icsoil2.png)
+> ![alt](screenshots/icsoil3.png)
 > *The VirtuaPlant dashboard showing the simulated oil plant , feed pump, tank, outlet valve, and separator , used to visually confirm each attack's effect in real time.*
 
 ---
@@ -108,7 +108,7 @@ Run against the lab target and left running for over 60 seconds:
 python3 overflow_attack.py 10.49.185.37
 ```
 
-> 📷 **[Placeholder: Screenshot , "overflow_attack.py result"]**
+> ![alt](screenshots/icsoil4.png)
 > *Terminal output of `overflow_attack.py` running against the target, alongside the VirtuaPlant dashboard visibly overflowing as the feed pump stays on and the level sensor is suppressed.*
 
 Once the overflow condition had been sustained past the 60-second mark, the flag was retrieved:
@@ -156,7 +156,7 @@ while True:
 python3 waste_water.py 10.49.185.37
 ```
 
-> 📷 **[Placeholder: Screenshot , "waste_water.py result"]**
+> ![alt](screenshots/icsoil5.png)
 > *Terminal output of `waste_water.py` running, with the polling register dump showing register 7 (waste counter) climbing past 2000 while the plant is held in the forced state.*
 
 Once register 7 exceeded 2000, the flag was retrieved:
