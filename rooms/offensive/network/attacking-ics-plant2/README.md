@@ -32,6 +32,7 @@ The attacker's goal is not to gain code execution or steal credentials , it is t
 | `curl` | Retrieve the flag files served over HTTP once each condition was met |
 
 > ![alt](screenshots/icsoil1.png)
+> ![alt](screenshots/icsoil2.png)
 > *Nmap results showing the lab machine's open ports, confirming Modbus/TCP (502) and the HTTP service used to serve `flag1.txt`/`flag2.txt`.*
 
 > ![alt](screenshots/icsoil2.png)
