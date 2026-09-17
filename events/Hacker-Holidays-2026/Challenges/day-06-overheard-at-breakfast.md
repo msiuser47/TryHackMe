@@ -87,7 +87,7 @@ These steps were successful, and an encoded string was found within the profile.
 
 ## Exploitation Steps
 
-### Step 1 — Computing the MD5 Hash of the Email Address
+### Step 1 , Computing the MD5 Hash of the Email Address
 
 ```
 echo -n "lambobytelotushotel@gmail.com" | md5sum
@@ -97,7 +97,7 @@ echo -n "lambobytelotushotel@gmail.com" | md5sum
 
 **Reason:** Gravatar relies on the MD5 hash of an email address to determine which profile to display.
 
-### Step 2 — Accessing the Gravatar Profile
+### Step 2 , Accessing the Gravatar Profile
 
 The following URL was opened:
 
@@ -109,7 +109,7 @@ replacing `<MD5_HASH>` with the value obtained in the previous step.
 
 **Result:** Access was gained to the profile of the user **"Lambo."**
 
-### Step 3 — Extracting the Encoded Text
+### Step 3 , Extracting the Encoded Text
 
 The following string was found within the profile:
 
@@ -117,7 +117,7 @@ The following string was found within the profile:
 VEhNe1MzY3JlVF9QcjBmaWwzX0g0c19iMzNuX0lkZW50MWZpM2R9
 ```
 
-### Step 4 — Decoding the Base64 String
+### Step 4 , Decoding the Base64 String
 
 ```
 echo 'VEhNe1MzY3JlVF9QcjBmaWwzX0g0c19iMzNuX0lkZW50MWZpM2R9' | base64 -d
