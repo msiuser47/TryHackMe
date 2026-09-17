@@ -8,7 +8,7 @@
 
 ## 1. Scenario
 
-The incident response team flagged suspicious activity on a Linux database server. A memory dump (`linux.mem`) was collected before the host was taken offline, and the investigation had to rely entirely on that RAM capture — there was no disk image, no live system, and no prior context beyond the raw memory.
+The incident response team flagged suspicious activity on a Linux database server. A memory dump (`linux.mem`) was collected before the host was taken offline, and the investigation had to rely entirely on that RAM capture , there was no disk image, no live system, and no prior context beyond the raw memory.
 
 The goal was to reconstruct the attacker's actions purely from volatile memory artifacts: credentials exposed in shell history, the malicious payload dropped on the host, the attacker's network endpoint, and any persistence mechanism left behind.
 
@@ -80,7 +80,7 @@ The same bash history entry that exposed the root password also referenced `user
 
 ### 6.3 Malicious File and Its MD5 Hash
 
-The bash history showed a `wget` download of a C source file (`shell.c`), which was subsequently compiled into a binary named `pkexecc` and executed. This chain — download, compile, execute — identified `pkexecc` as the malicious payload.
+The bash history showed a `wget` download of a C source file (`shell.c`), which was subsequently compiled into a binary named `pkexecc` and executed. This chain , download, compile, execute , identified `pkexecc` as the malicious payload.
 
 To recover and hash the binary from the page cache:
 
@@ -187,7 +187,7 @@ T1027.004 (Compiled locally → pkexecc)
 T1204.002 (pkexecc executed)
       │
       ▼
-T1571 (C2 contact — 10.0.2.72:1337)
+T1571 (C2 contact , 10.0.2.72:1337)
       │
       ▼
 T1053.003 + T1546.004 (Cron persistence rewriting .bashrc every minute)
@@ -196,7 +196,7 @@ T1053.003 + T1546.004 (Cron persistence rewriting .bashrc every minute)
 ## 9. Key Takeaways
 
 - **Symbol accuracy is the gate.** Linux memory forensics with Volatility 3 lives or dies on having correctly matched kernel debug symbols; this is usually the first (and most overlooked) blocker in any real investigation.
-- **Bash history is high-value.** A single recovered shell history is often enough to reconstruct the entire attack chain — credential exposure, payload staging, compilation, and execution — in the order it happened.
+- **Bash history is high-value.** A single recovered shell history is often enough to reconstruct the entire attack chain , credential exposure, payload staging, compilation, and execution , in the order it happened.
 - **Cross-referencing artifact types builds confidence.** Correlating `bash.Bash`, `psaux.PsAux`, `envars.Envars`, `sockstat.Sockstat`, and `pagecache.*` against each other turns isolated fragments (an IP here, a filename there) into a coherent incident timeline.
 - **Page cache recovery works even after the process exits.** Files no longer resident as a running process can often still be reconstructed byte-for-byte straight from cached pages in memory.
 
