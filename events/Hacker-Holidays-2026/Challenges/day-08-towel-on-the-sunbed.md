@@ -31,7 +31,7 @@ After starting the machine and accessing the application at:
 http://MACHINE_IP:3000
 ```
 
-a web application named **Ponzi — Wellness Rewards** was identified.
+a web application named **Ponzi , Wellness Rewards** was identified.
 
 The application allows a user to create an account and claim a **Daily Reward**. According to the challenge description, the system is intended to allow the user to claim the reward only once every 24 hours, but a flaw exists that allows it to be claimed more than once.
 
@@ -42,7 +42,7 @@ The hint provided in the challenge:
 
 > *"the clock is the only thing checking him"*
 
-suggests that the application relies on a time check to prevent repeated claims — implying a possible flaw in the verification logic.
+suggests that the application relies on a time check to prevent repeated claims , implying a possible flaw in the verification logic.
 
 ### Open Services
 
@@ -54,10 +54,10 @@ No other services such as SSH or FTP were needed, since the challenge relies ent
 
 ### Tools Used
 
-- **Browser** — accessing the application.
-- **Burp Suite** — intercepting and analyzing HTTP requests.
-- **Repeater** — testing request replay.
-- **Intruder / Parallel Requests** — testing simultaneous request submission.
+- **Browser** , accessing the application.
+- **Burp Suite** , intercepting and analyzing HTTP requests.
+- **Repeater** , testing request replay.
+- **Intruder / Parallel Requests** , testing simultaneous request submission.
 
 ### Rationale for the Next Step
 
@@ -83,7 +83,7 @@ This indicated that the reward-claim process relied on server-side session state
 
 ### The Vulnerability
 
-**Race Condition in Business Logic** — a condition that occurs when multiple requests are processed simultaneously before the system updates the user's internal state.
+**Race Condition in Business Logic** , a condition that occurs when multiple requests are processed simultaneously before the system updates the user's internal state.
 
 ### Why It Is a Vulnerability
 
@@ -221,11 +221,11 @@ After sending the concurrent requests:
 - A large number of rewards was obtained.
 - The Whale Vault was unlocked.
 
-**Flag obtained?** Yes — extracted from inside the Whale Vault.
+**Flag obtained?** Yes , extracted from inside the Whale Vault.
 
-**Shell obtained?** No — there was no exploitation of the operating system or shell access involved.
+**Shell obtained?** No , there was no exploitation of the operating system or shell access involved.
 
-**Privilege escalation achieved?** No — the vulnerability existed entirely within the application's business logic.
+**Privilege escalation achieved?** No , the vulnerability existed entirely within the application's business logic.
 
 ---
 
@@ -278,5 +278,5 @@ Sensitive functions should be tested against:
 
 ## References
 
-- [PortSwigger Web Security Academy — Race Conditions](https://portswigger.net/web-security/race-conditions)
-- [OWASP Web Security Testing Guide — Business Logic Testing](https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/10-Business_Logic_Testing/00-Introduction_to_Business_Logic)
+- [PortSwigger Web Security Academy , Race Conditions](https://portswigger.net/web-security/race-conditions)
+- [OWASP Web Security Testing Guide , Business Logic Testing](https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/10-Business_Logic_Testing/00-Introduction_to_Business_Logic)
