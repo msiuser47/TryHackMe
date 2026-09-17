@@ -21,9 +21,9 @@
 
 ## 📖 About This Project
 
-This Directory documents my complete, independently-written walkthroughs and technical analysis for **TryHackMe's Hacker Holidays 2026: The Byte Lotus** — a 14-day festive CTF-style event set at a fictional luxury resort. Each day introduced a standalone challenge spanning a realistic range of attack surfaces: AI agents, cloud infrastructure, web applications, APIs, and forensic artifacts.
+This Directory documents my complete, independently-written walkthroughs and technical analysis for **TryHackMe's Hacker Holidays 2026: The Byte Lotus** , a 14-day festive CTF-style event set at a fictional luxury resort. Each day introduced a standalone challenge spanning a realistic range of attack surfaces: AI agents, cloud infrastructure, web applications, APIs, and forensic artifacts.
 
-Rather than posting raw flags, every writeup follows a consistent, professional structure — **Overview → Analysis → Root Cause → Exploitation → Remediation** — mirroring the format used in real-world penetration test reports.
+Rather than posting raw flags, every writeup follows a consistent, professional structure , **Overview → Analysis → Root Cause → Exploitation → Remediation** , mirroring the format used in real-world penetration test reports.
 
 > 🏆 **Result:** 14/14 challenges completed, spanning Very Easy → Hard difficulty.
 
@@ -35,7 +35,7 @@ Recruiters and technical reviewers can use this Directory to evaluate:
 
 | What You'll See | What It Demonstrates |
 |---|---|
-| Structured root-cause analysis in every writeup | Ability to communicate findings clearly — a core pentest reporting skill |
+| Structured root-cause analysis in every writeup | Ability to communicate findings clearly , a core pentest reporting skill |
 | Coverage across 6 distinct security domains | Breadth: not a one-trick specialist |
 | Chained, multi-stage exploitation (e.g. Day 11, Day 14) | Ability to think in attack chains, not isolated bugs |
 | Remediation guidance alongside every exploit | A defensive mindset, not just "break things" |
@@ -126,13 +126,13 @@ Hacker-Holidays-2026-The-Byte-Lotus/
 
 Working through all 14 days reinforced technical skills across a wide spread of offensive security domains:
 
-- **🕵️ OSINT Tradecraft** — Correlating fragments of information across social media posts, public profiles, and casual conversation leaks to reconstruct a bigger picture (`Day 6`), reinforcing that human-layer reconnaissance is often the fastest path to a foothold.
-- **🤖 AI Prompt Injection & LLM Abuse** — Manipulating an AI agent's trust model through unverified identity claims and role manipulation (`Day 1`), and chaining indirect prompt injection with insecure tool-output handling to achieve unintended actions (`Day 13`) — a growing and increasingly critical class of vulnerability in AI-integrated systems.
-- **🌐 Web & API Penetration Testing** — Exploiting exposed `.git` repositories, NoSQL injection, Server-Side Template Injection (SSTI), Zip Slip path traversal leading to RCE, and race conditions in business logic/API workflows (`Days 2, 7, 8, 10`).
-- **☁️ Cloud Misconfiguration Analysis** — Abusing overly permissive AWS IAM policies and pivoting through Azure Storage, Key Vault, and Managed Identity trust relationships to escalate access (`Days 3, 9`).
-- **🧬 Digital Forensics & Incident Response** — Performing PCAP traffic analysis and malware triage to trace data exfiltration (`Day 4`), analyzing fileless WMI persistence with reflective .NET assembly loading (`Day 12`), and recovering DPAPI-protected credentials to defeat encrypted volume protection (`Day 14`).
-- **🔓 Privilege Escalation & Boot2Root Methodology** — Chaining OS command injection and unsafe YAML deserialization from initial foothold through to full privilege escalation on multi-stage boxes (`Days 5, 11`).
-- **📝 Structured Reporting** — Practicing clear, reproducible documentation of root cause, exploitation steps, and remediation — a core skill for real-world penetration testing engagements and professional writeups.
+- **🕵️ OSINT Tradecraft** , Correlating fragments of information across social media posts, public profiles, and casual conversation leaks to reconstruct a bigger picture (`Day 6`), reinforcing that human-layer reconnaissance is often the fastest path to a foothold.
+- **🤖 AI Prompt Injection & LLM Abuse** , Manipulating an AI agent's trust model through unverified identity claims and role manipulation (`Day 1`), and chaining indirect prompt injection with insecure tool-output handling to achieve unintended actions (`Day 13`) , a growing and increasingly critical class of vulnerability in AI-integrated systems.
+- **🌐 Web & API Penetration Testing** , Exploiting exposed `.git` repositories, NoSQL injection, Server-Side Template Injection (SSTI), Zip Slip path traversal leading to RCE, and race conditions in business logic/API workflows (`Days 2, 7, 8, 10`).
+- **☁️ Cloud Misconfiguration Analysis** , Abusing overly permissive AWS IAM policies and pivoting through Azure Storage, Key Vault, and Managed Identity trust relationships to escalate access (`Days 3, 9`).
+- **🧬 Digital Forensics & Incident Response** , Performing PCAP traffic analysis and malware triage to trace data exfiltration (`Day 4`), analyzing fileless WMI persistence with reflective .NET assembly loading (`Day 12`), and recovering DPAPI-protected credentials to defeat encrypted volume protection (`Day 14`).
+- **🔓 Privilege Escalation & Boot2Root Methodology** , Chaining OS command injection and unsafe YAML deserialization from initial foothold through to full privilege escalation on multi-stage boxes (`Days 5, 11`).
+- **📝 Structured Reporting** , Practicing clear, reproducible documentation of root cause, exploitation steps, and remediation , a core skill for real-world penetration testing engagements and professional writeups.
 
 ---
 
@@ -140,11 +140,11 @@ Working through all 14 days reinforced technical skills across a wide spread of 
 
 This section is organized for easy navigation and reference:
 
-1. **Browse by day** — Use the [Challenge Matrix](#-challenge-matrix) above to jump directly to any writeup or its corresponding screenshots.
-2. **Reading a writeup** — Each file in `Challenges/` follows a consistent structure: `Overview → Challenge Analysis → Root Cause → Exploitation Steps → Remediation/Takeaways`.
-3. **Screenshots** — Supporting visual evidence for each challenge lives in its matching `Screenshots/ChallengeN/` folder, referenced inline within the corresponding writeup.
-4. **Using this as a learning reference** — If you're attempting the event yourself, it's recommended to try each challenge independently before consulting these writeups, to get the most value out of the learning process.
-5. **Contributions / Corrections** — Found an inaccuracy or have a cleaner approach to a challenge? Feel free to open an issue or pull request.
+1. **Browse by day** , Use the [Challenge Matrix](#-challenge-matrix) above to jump directly to any writeup or its corresponding screenshots.
+2. **Reading a writeup** , Each file in `Challenges/` follows a consistent structure: `Overview → Challenge Analysis → Root Cause → Exploitation Steps → Remediation/Takeaways`.
+3. **Screenshots** , Supporting visual evidence for each challenge lives in its matching `Screenshots/ChallengeN/` folder, referenced inline within the corresponding writeup.
+4. **Using this as a learning reference** , If you're attempting the event yourself, it's recommended to try each challenge independently before consulting these writeups, to get the most value out of the learning process.
+5. **Contributions / Corrections** , Found an inaccuracy or have a cleaner approach to a challenge? Feel free to open an issue or pull request.
 
 ---
 
@@ -152,11 +152,11 @@ This section is organized for easy navigation and reference:
 
 > This Directory is intended **strictly for educational and informational purposes**.
 >
-> All content documents activity performed within **TryHackMe's Hacker Holidays 2026** event — a legal, sanctioned, and intentionally vulnerable environment designed for security training. All systems, applications, and data referenced (including "The Byte Lotus" resort, its staff, and associated narrative elements) are **entirely fictional**.
+> All content documents activity performed within **TryHackMe's Hacker Holidays 2026** event , a legal, sanctioned, and intentionally vulnerable environment designed for security training. All systems, applications, and data referenced (including "The Byte Lotus" resort, its staff, and associated narrative elements) are **entirely fictional**.
 >
 > The techniques, tools, and methodologies described here should **never** be applied to systems, networks, or applications without **explicit, written authorization** from their owner. Unauthorized access to computer systems is illegal under laws such as the Computer Fraud and Abuse Act (CFAA) and equivalent legislation worldwide.
 >
-> The author assumes **no responsibility or liability** for any misuse of the information contained in this Directory. Use this knowledge responsibly, ethically, and only within legal boundaries — such as authorized labs, CTFs, and platforms like TryHackMe or HackTheBox.
+> The author assumes **no responsibility or liability** for any misuse of the information contained in this Directory. Use this knowledge responsibly, ethically, and only within legal boundaries , such as authorized labs, CTFs, and platforms like TryHackMe or HackTheBox.
 
 ---
 
